@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>UV Zone · Jokes</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="jokes.html" class="here">Jokes</a>
+      <a href="about.html">About Me</a>
+    </nav>
+
+    <section class="card sun">
+      <h1>Joke Machine</h1>
+      <p class="count" id="count"></p>
+    </section>
+
+    <section class="card">
+      <p class="joke-q" id="question">Loading a joke...</p>
+      <p class="joke-a" id="answer"></p>
+      <div class="row">
+        <button id="reveal" class="pinkbtn">Tell me!</button>
+        <button id="next">Next joke</button>
+      </div>
+    </section>
+
+    <footer>Know a good joke? Add it to jokes.js!</footer>
+  </div>
+  <script src="jokes.js"></script>
+</body>
+</html>
