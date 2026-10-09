@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>UV Zone · Origami 10</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Origami page extras — uses the colours from style.css */
+    .o-hero { text-align: center; transform: rotate(1deg); }
+    .o-hero .num { font-family: var(--display); font-size: 4rem; line-height: 1; color: var(--sun); -webkit-text-stroke: 3px var(--ink); }
+    .o-hero .stars { letter-spacing: 6px; font-size: 1.2rem; }
+
+    .filters { display: grid; gap: 14px; }
+    .filters h2 { font-size: 1rem; margin-bottom: 8px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      font-family: var(--body); font-weight: 700; font-size: 1rem;
+      color: var(--ink); background: #fff;
+      border: 3px solid var(--ink); border-radius: 999px;
+      padding: 4px 14px; box-shadow: 3px 3px 0 var(--ink); cursor: pointer;
+    }
+    .chip.on { background: var(--sky); }
+    .chip.t.on { background: var(--sun); }
+
+    .models { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+    .model {
+      font: inherit; color: var(--ink); text-align: left; cursor: pointer;
+      background: #fff; border: 4px solid var(--ink); border-radius: 20px;
+      box-shadow: 6px 6px 0 var(--ink); padding: 0; overflow: hidden;
+    }
+    .model:hover, .model:focus-visible { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); outline: none; }
+    .art { font-size: 3.4rem; text-align: center; padding: 14px 0; background: var(--sky); border-bottom: 4px solid var(--ink); }
+    .model:nth-child(3n+2) .art { background: var(--leaf); }
+    .model:nth-child(3n+3) .art { background: var(--sun); }
+    .mbody { padding: 12px 14px 14px; }
+    .mbody h3 { font-family: var(--display); font-weight: 400; font-size: 1.1rem; margin: 0 0 4px; }
+    .mbody p { font-size: 1rem; }
+
+    .tag { display: inline-block; font-size: 0.85rem; font-weight: 700; padding: 1px 10px; border: 2px solid var(--ink); border-radius: 999px; margin-right: 4px; }
+    .Easy { background: var(--leaf); }
+    .Medium { background: var(--sun); }
+    .Hard { background: var(--pop); color: #fff; }
+    .th { background: #fff; }
+
+    dialog {
+      border: 4px solid var(--ink); border-radius: 20px; padding: 0;
+      max-width: 460px; width: calc(100% - 32px); max-height: 88vh; overflow-y: auto;
+      background: #fff; color: var(--ink); box-shadow: 8px 8px 0 var(--ink);
+    }
+    dialog::backdrop { background: rgba(29, 26, 43, 0.6); }
+    .m { padding: 20px; }
+    .m .art { border: 3px solid var(--ink); border-radius: 14px; margin-bottom: 12px; }
+    .m h3 { font-family: var(--display); font-weight: 400; font-size: 1.4rem; margin: 0 0 6px; }
+    .m h4 { font-family: var(--display); font-weight: 400; margin: 14px 0 4px; }
+    .m ul, .m ol { padding-left: 22px; margin: 8px 0; }
+    .m ol li { margin-bottom: 8px; }
+    .x { float: right; padding: 2px 12px; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="jokes.html">Jokes</a>
+      <a href="origami.html" class="here">Origami</a>
+      <a href="about.html">About Me</a>
+    </nav>
+
+    <section class="card blue o-hero">
+      <div class="stars">★ ★ ★</div>
+      <div class="num">10</div>
+      <h1>Origami 10</h1>
+      <p>Fold like a champion! Paper art, Messi style.</p>
+    </section>
+
+    <section class="card filters">
+      <div>
+        <h2>⚽ How hard?</h2>
+        <div class="chips" id="dif"></div>
+      </div>
+      <div>
+        <h2>🍃 Theme</h2>
+        <div class="chips" id="thm"></div>
+      </div>
+      <p class="count" id="count"></p>
+    </section>
+
+    <section class="models" id="grid"></section>
+
+    <footer>Tap a model to see how to fold it. Happy folding!</footer>
+  </div>
+  <dialog id="dlg"></dialog>
+
+  <script>
+    // UV: add new models here! Then add their steps in ST below, using the same name.
+    var D = [
+      {n:"Paper Boat",i:"⛵",d:"Easy",t:"Nature",m:5,p:"A classic floating boat. Perfect first fold.",tip:"Press creases hard so it floats better."},
+      {n:"Tulip",i:"🌷",d:"Easy",t:"Nature",m:8,p:"A simple spring flower with a folded stem.",tip:"Use red or pink paper, green for the stem."},
+      {n:"Paper Sword",i:"🗡️",d:"Easy",t:"Ninja",m:5,p:"A sturdy ninja blade made from one sheet.",tip:"Roll the sheet tightly first for a straight blade."},
+      {n:"Samurai Helmet",i:"🪖",d:"Easy",t:"Ninja",m:7,p:"A kabuto helmet that fits on your head.",tip:"Use a big square, like newspaper."},
+      {n:"Football Jersey",i:"👕",d:"Easy",t:"Football",m:8,p:"A mini shirt. Colour it sky blue and white with a 10!",tip:"Draw stripes before folding."},
+      {n:"Fox",i:"🦊",d:"Medium",t:"Nature",m:12,p:"A cute fox face with pointy ears.",tip:"Orange paper with a white back looks great."},
+      {n:"Crane",i:"🕊️",d:"Medium",t:"Nature",m:15,p:"The legendary origami crane, symbol of peace.",tip:"Learn the bird base first. It unlocks many models."},
+      {n:"Ninja Star (4-point)",i:"✴️",d:"Medium",t:"Ninja",m:12,p:"A classic shuriken from two squares locked together.",tip:"Use two colours for a striking look."},
+      {n:"Kunai Dart",i:"🔪",d:"Medium",t:"Ninja",m:10,p:"A throwing dart with a sharp tip and ring handle.",tip:"Fold on a hard table for crisp edges."},
+      {n:"Lotus Flower",i:"🪷",d:"Medium",t:"Nature",m:18,p:"Layered petals that open like a blooming lotus.",tip:"Pull petals out slowly, layer by layer."},
+      {n:"Paper Football",i:"⚽",d:"Medium",t:"Football",m:25,p:"An inflatable-style ball. Blow in the hole to puff it.",tip:"Keep the final hole open for air."},
+      {n:"Ninja Star (8-point)",i:"🌟",d:"Hard",t:"Ninja",m:30,p:"A modular star made from several interlocking units.",tip:"Fold all units identically before assembling."},
+      {n:"Dragon",i:"🐉",d:"Hard",t:"Nature",m:60,p:"A winged dragon with scales and a long tail.",tip:"Use thin, strong paper like kami or foil."},
+      {n:"World Cup Trophy",i:"🏆",d:"Hard",t:"Football",m:40,p:"A golden trophy worthy of three stars.",tip:"Gold or yellow paper makes it shine."}
+    ];
+    var ST = {
+      "Paper Boat":["Use a rectangle (A4). Fold in half, short edge to short edge, fold at top.","Fold both top corners down to the center to make a house shape.","Fold the bottom strip up on the front, then flip and fold the other strip up.","Open the hat and pinch the bottom corners together into a diamond.","Fold the bottom point up on the front and on the back to make a triangle.","Open it again into a diamond, then pull the top points apart gently.","Flatten the bottom and stand your boat up."],
+      "Tulip":["Colored side down, fold both diagonals, then flip and fold in half both ways.","Collapse into a triangle (waterbomb base).","Fold the lower corners of the top layer up to the top point, then repeat on the back.","Gently pull the petals apart at the top.","Blow into the hole at the bottom to puff the bloom.","For a stem, fold a green square diagonally, then roll into a thin tube. Tape to the flower."],
+      "Paper Sword":["Roll an A4 sheet tightly from corner to corner into a thin tube.","Tape along the edge so it does not unroll.","Flatten the last 3 cm at one end and fold it to a point for the tip.","Fold a small paper strip into a cross piece and slide it onto the handle as the guard.","Tape the guard in place."],
+      "Samurai Helmet":["Start with a large square. Fold diagonally into a triangle, long edge at the bottom.","Fold the left and right corners up to the top point to make a diamond.","Fold the front bottom point up to the top point.","Fold it back down halfway to make the visor.","Flip and fold the back bottom point up the same way, then tuck it in.","Fold the two side points outward for the helmet wings.","Open the bottom and put it on your head."],
+      "Football Jersey":["Colored side down. Fold in half vertically and unfold for a center line.","Fold the left and right edges to the center line.","Flip it over.","Fold the top corners down diagonally to form the collar V.","Fold the outer top corners out to make sleeves.","Fold the bottom edge up behind and tuck it in.","Flip and draw sky blue stripes and a big number 10."],
+      "Fox":["Colored side down. Fold diagonally in half and unfold.","Fold the left and right corners to the center crease to make a kite.","Flip it over.","Fold the top point down to shape the forehead.","Fold the two ear tips outward.","Fold the bottom point up a little for the nose.","Draw eyes and a nose."],
+      "Crane":["Colored side up. Fold both diagonals and unfold.","Flip. Fold in half both ways and unfold.","Collapse into a small square base.","Fold the bottom edges of the top layer to the center. Fold the top down, then unfold all.","Lift the bottom point and press it up into a petal fold.","Flip and repeat to get a diamond (bird base).","Fold the narrow sides to the center on both faces.","Inside reverse fold the two bottom points up for neck and tail.","Reverse fold the tip of one for the head.","Pull wings down and spread them."],
+      "Ninja Star (4-point)":["Take two squares of different colors.","Fold each in half lengthwise twice to get a thin strip.","Fold one end corner down and the opposite end corner up to make a Z-shaped parallelogram. Mirror the second one.","Cross the two pieces at 90 degrees.","Fold each arm over the center, one after another.","Tuck the last arm under the first fold to lock it.","Press flat. Your star is done."],
+      "Kunai Dart":["Colored side down. Fold diagonally in half.","Fold both lower edges to the center to make a long kite.","Fold in half along the center line, point at the top.","Fold the wide end back about 2 cm for the handle.","Roll a thin paper strip into a ring and tape it to the end.","Sharpen the tip with a firm crease."],
+      "Lotus Flower":["Start with a square. Fold all 4 corners to the center.","Fold the new corners to the center again.","Fold the corners to the center a third time.","Flip over and fold the corners to the center once more.","Hold the center and pull the back petals up and out.","Pull the middle layer up, then the inner layer.","Shape and curl the petals."],
+      "Paper Football":["Colored side down. Fold both diagonals and flip. Fold in half both ways.","Collapse into a triangle (waterbomb base).","Fold the lower corners of the top layer up to the top point. Flip and repeat.","Fold the left and right points to the center on both sides.","Tuck the small triangles into the pockets.","Blow into the hole at the bottom to inflate it.","Draw black pentagons to make it a football."],
+      "Ninja Star (8-point)":["Cut 8 identical squares, alternating two colors.","Make each unit like the 4-point star: thin strip, then a Z-shaped parallelogram.","Join two units by sliding one flap into the other pocket.","Keep adding units around in a ring.","Close the ring by tucking the last flap into the first unit.","Press each tip firmly to lock the star."],
+      "Dragon":["Start with a bird base.","Fold the bottom flaps together and pleat them into a long tail.","Narrow the tail with repeated reverse folds.","Fold the wing flaps out and crease the wing edges.","Reverse fold the neck and form the head.","Make the jaw with an inside reverse fold, then add horns.","Pleat the spine and curl the tail.","Tip: search the model name plus origami diagram for a video."],
+      "World Cup Trophy":["Use a gold square. Fold both diagonals and unfold.","Fold all corners to the center, then flip and repeat.","Fold the lower corners up to make the cup bowl.","Fold the two side flaps outward and curl them into handles.","Fold the base up and flatten it for the stand.","Pinch the neck so the cup stands tall.","Place it on a shelf and say Vamos!"]
+    };
+
+    var df = "All", tf = "All";
+
+    function chips(id, list, cls, get, set) {
+      var e = document.getElementById(id);
+      e.innerHTML = "";
+      list.forEach(function (v) {
+        var b = document.createElement("button");
+        b.className = "chip " + cls + (get() == v ? " on" : "");
+        b.textContent = v;
+        b.onclick = function () { set(v); draw(); };
+        e.appendChild(b);
+      });
+    }
+
+    function draw() {
+      chips("dif", ["All", "Easy", "Medium", "Hard"], "d", function () { return df; }, function (v) { df = v; });
+      chips("thm", ["All", "Nature", "Ninja", "Football"], "t", function () { return tf; }, function (v) { tf = v; });
+      var L = D.filter(function (x) { return (df == "All" || x.d == df) && (tf == "All" || x.t == tf); });
+      document.getElementById("count").textContent = L.length + " model" + (L.length == 1 ? "" : "s");
+      var g = document.getElementById("grid");
+      g.innerHTML = "";
+      L.forEach(function (x) {
+        var c = document.createElement("button");
+        c.className = "model";
+        c.innerHTML = '<div class="art">' + x.i + '</div><div class="mbody"><h3>' + x.n + '</h3><p>' + x.p + '</p><span class="tag ' + x.d + '">' + x.d + '</span><span class="tag th">' + x.t + '</span></div>';
+        c.onclick = function () { openModel(x); };
+        g.appendChild(c);
+      });
+    }
+
+    function openModel(x) {
+      var d = document.getElementById("dlg");
+      d.innerHTML = '<div class="m"><button class="x" aria-label="Close">✕</button><div class="art">' + x.i + '</div><h3>' + x.n + '</h3>'
+        + '<span class="tag ' + x.d + '">' + x.d + '</span><span class="tag th">' + x.t + '</span><p>' + x.p + '</p>'
+        + '<ul><li>Steps: ' + ST[x.n].length + '</li><li>Time: about ' + x.m + ' minutes</li><li>Tip: ' + x.tip + '</li></ul>'
+        + '<h4>How to fold</h4><ol>' + ST[x.n].map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ol></div>';
+      d.querySelector(".x").onclick = function () { d.close(); };
+      d.onclick = function (e) { if (e.target == d) d.close(); };
+      d.showModal();
+    }
+
+    draw();
+  </script>
+</body>
+</html>
