@@ -35,5 +35,9 @@ function showAnswer() {
 
 document.getElementById("next").addEventListener("click", nextJoke);
 document.getElementById("reveal").addEventListener("click", showAnswer);
-document.getElementById("count").textContent = jokes.length + " jokes in the machine";
+function showCount() {
+  document.getElementById("count").textContent = t("count", jokes.length);
+}
+window.onLangChange = showCount;
+showCount();
 nextJoke();

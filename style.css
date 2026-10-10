@@ -1,13 +1,15 @@
-/* UV Zone — comic-sticker look: thick outlines, bright paper, chunky letters */
+/* UV Zone — art-studio look: sketchbook paper, slate ink, muted paint colours */
 :root {
-  --paper: #fff6c9;   /* page background */
-  --ink: #1d1a2b;     /* outlines and text */
-  --pop: #ff5b8a;     /* pink */
-  --sky: #4cc9f0;     /* blue */
-  --leaf: #7bd88f;    /* green */
-  --sun: #ffd23f;     /* yellow */
-  --display: "Bungee", "Arial Black", sans-serif;
-  --body: "Baloo 2", "Comic Sans MS", system-ui, sans-serif;
+  --paper: #f3f5f2;   /* page background (sketchbook paper) */
+  --ink: #26313b;     /* outlines and text (slate pencil) */
+  --pop: #d9784a;     /* burnt orange */
+  --sky: #8db6d4;     /* muted blue */
+  --leaf: #a9c9a0;    /* sage green */
+  --sun: #e8c468;     /* ochre */
+  --dot: rgba(38, 49, 59, 0.12); /* faint grid dots */
+  --card: #ffffff;    /* plain card background */
+  --display: "Bungee", "Baloo 2", "Baloo Tammudu 2", "Baloo Tamma 2", "Arial Black", sans-serif;
+  --body: "Baloo 2", "Baloo Tammudu 2", "Baloo Tamma 2", "Comic Sans MS", system-ui, sans-serif;
   color-scheme: light;
 }
 
@@ -16,7 +18,7 @@
 body {
   margin: 0;
   background: var(--paper);
-  background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+  background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
   background-size: 22px 22px;
   background-position: 0 0;
   color: var(--ink);
@@ -46,7 +48,7 @@ nav a {
   font-size: 0.95rem;
   text-decoration: none;
   color: var(--ink);
-  background: #fff;
+  background: var(--card);
   border: 3px solid var(--ink);
   border-radius: 999px;
   padding: 6px 16px;
@@ -57,13 +59,13 @@ nav a.here { background: var(--pop); color: #fff; }
 
 /* Big sticker boxes */
 .card {
-  background: #fff;
-  border: 4px solid var(--ink);
-  border-radius: 20px;
+  background: var(--card);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 6px 6px 0 var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
 }
-.card.pink  { background: var(--pop); color: #fff; }
+.card.orange { background: var(--pop); color: #fff; }
 .card.blue  { background: var(--sky); }
 .card.green { background: var(--leaf); }
 .card.sun   { background: var(--sun); }
@@ -88,7 +90,7 @@ p { margin: 0 0 8px; }
   gap: 18px;
 }
 .grid a { color: inherit; text-decoration: none; display: block; }
-.grid a:hover .card, .grid a:focus-visible .card { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); }
+.grid a:hover .card, .grid a:focus-visible .card { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
 .big-emoji { font-size: 2.6rem; line-height: 1; margin-bottom: 6px; }
 
 button {
@@ -104,7 +106,7 @@ button {
 }
 button:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
 button:focus-visible { outline: 3px dashed var(--pop); outline-offset: 3px; }
-button.pinkbtn { background: var(--pop); color: #fff; }
+button.orangebtn { background: var(--pop); color: #fff; }
 
 .joke-q { font-size: 1.5rem; font-weight: 700; min-height: 3em; }
 .joke-a { font-size: 1.3rem; color: var(--pop); font-weight: 700; min-height: 2em; }
@@ -120,3 +122,52 @@ footer { text-align: center; font-size: 0.95rem; }
   * { transition: none !important; animation: none !important; }
   .hero { transform: none; }
 }
+
+/* ===== THEMES =====
+   UV: each block below is one theme. To make a new one, copy a block,
+   change the name and colours, then add it to the list in theme.js. */
+:root[data-look="forest"] {
+  --paper: #eef3ea; --ink: #233127; --pop: #b8673c; --sky: #9cc3b4;
+  --leaf: #7fae78; --sun: #d6c07a; --card: #fbfdf9; --dot: rgba(35, 49, 39, 0.12);
+}
+:root[data-look="ocean"] {
+  --paper: #ecf4f7; --ink: #1f3344; --pop: #d27a5c; --sky: #6fb1d1;
+  --leaf: #8fcfc4; --sun: #ecd6a0; --card: #ffffff; --dot: rgba(31, 51, 68, 0.12);
+}
+:root[data-look="desert"] {
+  --paper: #f6f0e6; --ink: #3a2f28; --pop: #c0603a; --sky: #9fbcc9;
+  --leaf: #a8b98a; --sun: #e3b45c; --card: #fffaf3; --dot: rgba(58, 47, 40, 0.12);
+}
+:root[data-look="mountain"] {
+  --paper: #eef0f3; --ink: #2a2f3a; --pop: #5f7396; --sky: #a9bfd8;
+  --leaf: #9fb5a3; --sun: #d8d2c4; --card: #ffffff; --dot: rgba(42, 47, 58, 0.12);
+}
+:root[data-look="night"] {
+  --paper: #141b26; --ink: #e6ecf2; --pop: #b86a45; --sky: #2e4a66;
+  --leaf: #345440; --sun: #5e5226; --card: #1e2735; --dot: rgba(230, 236, 242, 0.10);
+  color-scheme: dark;
+}
+
+/* Theme picker */
+.looks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.95rem;
+}
+.looks span { font-weight: 700; }
+.looks button {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 2px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0 var(--ink);
+  background: var(--card);
+  color: var(--ink);
+}
+.looks button.here { background: var(--sun); }
+.t-empty { display: none !important; }

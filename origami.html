@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>UV Zone · Origami 10</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&family=Baloo+Tammudu+2:wght@400;700&family=Baloo+Tamma+2:wght@400;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <script src="lang.js"></script>
   <style>
     /* Origami page extras — uses the colours from style.css */
     .o-hero { text-align: center; transform: rotate(1deg); }
@@ -17,7 +19,7 @@
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip {
       font-family: var(--body); font-weight: 700; font-size: 1rem;
-      color: var(--ink); background: #fff;
+      color: var(--ink); background: var(--card);
       border: 3px solid var(--ink); border-radius: 999px;
       padding: 4px 14px; box-shadow: 3px 3px 0 var(--ink); cursor: pointer;
     }
@@ -27,7 +29,7 @@
     .models { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
     .model {
       font: inherit; color: var(--ink); text-align: left; cursor: pointer;
-      background: #fff; border: 4px solid var(--ink); border-radius: 20px;
+      background: var(--card); border: 4px solid var(--ink); border-radius: 20px;
       box-shadow: 6px 6px 0 var(--ink); padding: 0; overflow: hidden;
     }
     .model:hover, .model:focus-visible { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink); outline: none; }
@@ -42,12 +44,12 @@
     .Easy { background: var(--leaf); }
     .Medium { background: var(--sun); }
     .Hard { background: var(--pop); color: #fff; }
-    .th { background: #fff; }
+    .th { background: var(--card); }
 
     dialog {
       border: 4px solid var(--ink); border-radius: 20px; padding: 0;
       max-width: 460px; width: calc(100% - 32px); max-height: 88vh; overflow-y: auto;
-      background: #fff; color: var(--ink); box-shadow: 8px 8px 0 var(--ink);
+      background: var(--card); color: var(--ink); box-shadow: 8px 8px 0 var(--ink);
     }
     dialog::backdrop { background: rgba(29, 26, 43, 0.6); }
     .m { padding: 20px; }
@@ -63,26 +65,26 @@
   <div class="wrap">
 
     <nav>
-      <a href="index.html">Home</a>
-      <a href="jokes.html">Jokes</a>
-      <a href="origami.html" class="here">Origami</a>
-      <a href="about.html">About Me</a>
+      <a data-t="home" href="index.html">Home</a>
+      <a data-t="jokes" href="jokes.html">Jokes</a>
+      <a data-t="origami" href="origami.html" class="here">Origami</a>
+      <a data-t="about" href="about.html">About Me</a>
     </nav>
 
     <section class="card blue o-hero">
       <div class="stars">★ ★ ★</div>
       <div class="num">10</div>
       <h1>Origami 10</h1>
-      <p>Fold like a champion! Paper art, Messi style.</p>
+      <p data-t="o_tag">Fold like a champion! Paper art, Messi style.</p>
     </section>
 
     <section class="card filters">
       <div>
-        <h2>⚽ How hard?</h2>
+        <h2>⚽ <span data-t="how_hard">How hard?</span></h2>
         <div class="chips" id="dif"></div>
       </div>
       <div>
-        <h2>🍃 Theme</h2>
+        <h2>🍃 <span data-t="o_theme">Theme</span></h2>
         <div class="chips" id="thm"></div>
       </div>
       <p class="count" id="count"></p>
@@ -90,7 +92,7 @@
 
     <section class="models" id="grid"></section>
 
-    <footer>Tap a model to see how to fold it. Happy folding!</footer>
+    <footer data-t="o_footer">Tap a model to see how to fold it. Happy folding!</footer>
   </div>
   <dialog id="dlg"></dialog>
 
@@ -137,7 +139,7 @@
       list.forEach(function (v) {
         var b = document.createElement("button");
         b.className = "chip " + cls + (get() == v ? " on" : "");
-        b.textContent = v;
+        b.textContent = t(v);
         b.onclick = function () { set(v); draw(); };
         e.appendChild(b);
       });
@@ -147,13 +149,13 @@
       chips("dif", ["All", "Easy", "Medium", "Hard"], "d", function () { return df; }, function (v) { df = v; });
       chips("thm", ["All", "Nature", "Ninja", "Football"], "t", function () { return tf; }, function (v) { tf = v; });
       var L = D.filter(function (x) { return (df == "All" || x.d == df) && (tf == "All" || x.t == tf); });
-      document.getElementById("count").textContent = L.length + " model" + (L.length == 1 ? "" : "s");
+      document.getElementById("count").textContent = (L.length == 1 ? t("model1") : t("models", L.length));
       var g = document.getElementById("grid");
       g.innerHTML = "";
       L.forEach(function (x) {
         var c = document.createElement("button");
         c.className = "model";
-        c.innerHTML = '<div class="art">' + x.i + '</div><div class="mbody"><h3>' + x.n + '</h3><p>' + x.p + '</p><span class="tag ' + x.d + '">' + x.d + '</span><span class="tag th">' + x.t + '</span></div>';
+        c.innerHTML = '<div class="art">' + x.i + '</div><div class="mbody"><h3>' + x.n + '</h3><p>' + x.p + '</p><span class="tag ' + x.d + '">' + t(x.d) + '</span><span class="tag th">' + t(x.t) + '</span></div>';
         c.onclick = function () { openModel(x); };
         g.appendChild(c);
       });
@@ -162,14 +164,15 @@
     function openModel(x) {
       var d = document.getElementById("dlg");
       d.innerHTML = '<div class="m"><button class="x" aria-label="Close">✕</button><div class="art">' + x.i + '</div><h3>' + x.n + '</h3>'
-        + '<span class="tag ' + x.d + '">' + x.d + '</span><span class="tag th">' + x.t + '</span><p>' + x.p + '</p>'
-        + '<ul><li>Steps: ' + ST[x.n].length + '</li><li>Time: about ' + x.m + ' minutes</li><li>Tip: ' + x.tip + '</li></ul>'
-        + '<h4>How to fold</h4><ol>' + ST[x.n].map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ol></div>';
+        + '<span class="tag ' + x.d + '">' + t(x.d) + '</span><span class="tag th">' + t(x.t) + '</span><p>' + x.p + '</p>'
+        + '<ul><li>' + t("steps") + ': ' + ST[x.n].length + '</li><li>' + t("time", x.m) + '</li><li>' + t("tip") + ': ' + x.tip + '</li></ul>'
+        + '<h4>' + t("how_fold") + '</h4><ol>' + ST[x.n].map(function (step) { return '<li>' + step + '</li>'; }).join('') + '</ol></div>';
       d.querySelector(".x").onclick = function () { d.close(); };
       d.onclick = function (e) { if (e.target == d) d.close(); };
       d.showModal();
     }
 
+    window.onLangChange = draw;
     draw();
   </script>
 </body>

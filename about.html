@@ -4,42 +4,44 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>UV Zone · About Me</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&family=Baloo+Tammudu+2:wght@400;700&family=Baloo+Tamma+2:wght@400;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <script src="lang.js"></script>
 </head>
 <body>
   <div class="wrap">
 
     <nav>
-      <a href="index.html">Home</a>
-      <a href="jokes.html">Jokes</a>
-      <a href="origami.html">Origami</a>
-      <a href="about.html" class="here">About Me</a>
+      <a data-t="home" href="index.html">Home</a>
+      <a data-t="jokes" href="jokes.html">Jokes</a>
+      <a data-t="origami" href="origami.html">Origami</a>
+      <a data-t="about" href="about.html" class="here">About Me</a>
     </nav>
 
     <section class="card blue">
-      <h1>About Me</h1>
-      <p>Hi! I'm UV. I like making things and telling jokes.</p>
+      <h1 data-t="about">About Me</h1>
+      <p data-t="about_intro">Hi! I'm UV. I like making things and telling jokes.</p>
     </section>
 
     <!-- UV: fill in your favourites! Change the words after each colon. -->
     <section class="grid">
-      <div class="card pink">
-        <h2>My favourites</h2>
+      <div class="card orange">
+        <h2 data-t="faves">My favourites</h2>
         <ul class="faves">
-          <li>Colour: ???</li>
-          <li>Animal: ???</li>
-          <li>Food: ???</li>
-          <li>Game: ???</li>
+          <li><span data-t="colour">Colour</span>: ???</li>
+          <li><span data-t="animal">Animal</span>: ???</li>
+          <li><span data-t="food">Food</span>: ???</li>
+          <li><span data-t="game">Game</span>: ???</li>
         </ul>
       </div>
       <div class="card green">
-        <h2>When I grow up</h2>
-        <p>I want to be a ???</p>
+        <h2 data-t="grow">When I grow up</h2>
+        <p><span data-t="wantbe">I want to be a</span> ???</p>
       </div>
     </section>
 
-    <footer>Website safety rule: no real name, school or address here!</footer>
+    <footer data-t="a_footer">Website safety rule: no real name, school or address here!</footer>
   </div>
 </body>
 </html>

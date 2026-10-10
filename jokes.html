@@ -4,34 +4,37 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>UV Zone · Jokes</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&family=Baloo+Tammudu+2:wght@400;700&family=Baloo+Tamma+2:wght@400;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <script src="lang.js"></script>
 </head>
 <body>
   <div class="wrap">
 
     <nav>
-      <a href="index.html">Home</a>
-      <a href="jokes.html" class="here">Jokes</a>
-      <a href="origami.html">Origami</a>
-      <a href="about.html">About Me</a>
+      <a data-t="home" href="index.html">Home</a>
+      <a data-t="jokes" href="jokes.html" class="here">Jokes</a>
+      <a data-t="origami" href="origami.html">Origami</a>
+      <a data-t="about" href="about.html">About Me</a>
     </nav>
 
     <section class="card sun">
-      <h1>Joke Machine</h1>
+      <h1 data-t="jm_title">Joke Machine</h1>
       <p class="count" id="count"></p>
+      <p class="count" data-t="j_note"></p>
     </section>
 
     <section class="card">
       <p class="joke-q" id="question">Loading a joke...</p>
       <p class="joke-a" id="answer"></p>
       <div class="row">
-        <button id="reveal" class="pinkbtn">Tell me!</button>
-        <button id="next">Next joke</button>
+        <button id="reveal" class="orangebtn" data-t="tell">Tell me!</button>
+        <button id="next" data-t="next">Next joke</button>
       </div>
     </section>
 
-    <footer>Know a good joke? Add it to jokes.js!</footer>
+    <footer data-t="j_footer">Know a good joke? Add it to jokes.js!</footer>
   </div>
   <script src="jokes.js"></script>
 </body>
