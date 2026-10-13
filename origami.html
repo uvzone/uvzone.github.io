@@ -104,6 +104,7 @@
     <footer data-t="o_footer">Tap a model to see how to fold it. Happy folding!</footer>
   </div>
   <dialog id="dlg"></dialog>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sh" x="-20%" y="-20%" width="145%" height="155%"><feDropShadow dx="1" dy="2" stdDeviation="1.6" flood-color="#000" flood-opacity=".4" result="s"/><feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0 0 0 0" result="g"/><feComposite in="g" in2="SourceAlpha" operator="in" result="gg"/><feMerge><feMergeNode in="s"/><feMergeNode in="gg"/></feMerge></filter><linearGradient id="pg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient><radialGradient id="pc" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/></radialGradient></defs></svg>
 
   <script>
     // UV: all the origami models live below. Each model has:
@@ -188,7 +189,7 @@ E["Ninja Star (8-point)"]=[(a+b).slice(1),[[28,"4 units: sky blue paper"],[66,"4
 E["Tulip"]=["#3a9d5d|42,6 56,6 56,102 42,102;#2a7a45|42,30 56,26 56,31 42,35;#2a7a45|42,60 56,56 56,61 42,65;#5cc27a|56,62 94,40 56,80",[[30,"Stem: green paper tube"],[84,"Leaf: light green paper"]],"Tulip stem and leaf colours"];
 E["Ninja Star (4-point)"]=["#2b3340|10,18 70,18 90,38 30,38;#c0392b|10,56 70,56 90,76 30,76",[[32,"Piece 1: dark paper"],[70,"Piece 2: red paper"]],"The two pieces for the star"];
 return E})();
-function ext(n){var e=EXT[n],o=e[0].split(';').map(function(s){var a=s.split('|');return'<polygon points="'+a[1]+'" fill="'+a[0]+'" stroke="#12263f" stroke-width="1.6" stroke-linejoin="round"/>'}).join('')+e[1].map(function(l){return'<text x="108" y="'+l[0]+'" font-size="9" fill="currentColor">'+l[1]+'</text>'}).join('');return'<div class="fin"><svg viewBox="0 0 240 114" style="width:100%;max-width:340px;height:auto">'+o+'</svg><small>'+e[2]+'</small></div>'}
+function ext(n){var e=EXT[n],o=e[0].split(';').map(function(s){var a=s.split('|');if(a[1][0]=='o'){var c=a[1].slice(1).split(',');return'<circle cx="'+c[0]+'" cy="'+c[1]+'" r="'+c[2]+'" fill="'+a[0]+'" stroke="#12263f" stroke-width="1.6"/>'}return'<polygon points="'+a[1]+'" fill="'+a[0]+'" stroke="#12263f" stroke-width="1.6" stroke-linejoin="round"/>'}).join('')+e[1].map(function(l){return'<text x="108" y="'+l[0]+'" font-size="9" fill="currentColor">'+l[1]+'</text>'}).join('');return'<div class="fin"><svg viewBox="0 0 240 114" style="width:100%;max-width:340px;height:auto">'+o+'</svg><small>'+e[2]+'</small></div>'}
 D.push({n:"Butterfly",i:"🦋",d:"Easy",t:"Nature",s:6,m:6,p:"A pair of wings from one square.",tip:"Press the wing creases flat."},{n:"Ninja War Fan",i:"🌬️",d:"Easy",t:"Ninja",s:6,m:8,p:"A pleated fan with a handle, like a ninja's tessen.",tip:"Keep every pleat the same width."},{n:"Football Shorts",i:"🩳",d:"Easy",t:"Football",s:6,m:6,p:"Mini match shorts with a waistband.",tip:"Draw the side stripe before folding."},{n:"Jumping Frog",i:"🐸",d:"Medium",t:"Nature",s:6,m:12,p:"A frog that jumps when you press its back.",tip:"Use thicker paper so it springs."},{n:"Ninja Nunchaku",i:"🥢",d:"Medium",t:"Ninja",s:5,m:15,p:"Two paper sticks joined by a chain.",tip:"Roll the sticks tightly so they stay straight."},{n:"Katana and Sheath",i:"⚔️",d:"Hard",t:"Ninja",s:7,m:35,p:"A ninja sword with its own sheath.",tip:"Make the sheath a bit wider than the blade."});
 Object.assign(ST,{
 "Butterfly":["Colored side down. Fold diagonally into a triangle, long edge at the bottom.","Fold the left and right corners up to the top point to make a diamond.","Fold the top point down about a third to make the head line.","Flip over and fold in half along the vertical center.","Open the wings and fold the lower edges up to shape them.","Draw spots on the wings."],
@@ -290,6 +291,35 @@ IMG["Frisbee"]=[SQ,"50,8 92,50 50,92 8,50","50,8 78,22 92,50 78,78 50,92 22,78 8
 PAL["Frisbee"]=["#75aadb","#fff"];
 CR["Frisbee"]={0:"12,12 88,88/88,12 12,88"};
 FIN["Frisbee"]="#75aadb|50,8 78,22 92,50 78,78 50,92 22,78 8,50 22,22;#fff|50,22 70,30 78,50 70,70 50,78 30,70 22,50 30,30;#75aadb|50,34 62,40 66,50 62,60 50,66 38,60 34,50 38,40;#f6b40e|t50,58,16,10";
+D.push({n:"Basketball Hoop",i:"🧺",d:"Medium",t:"Sports",s:5,m:15,p:"A backboard with a rim and net for paper-ball shots.",tip:"Tape the rim firmly so it holds its shape."},{n:"Tennis Racket",i:"🎾",d:"Medium",t:"Sports",s:5,m:15,p:"A racket with a string head and a wrapped grip.",tip:"Fold the handle strip tight so it stays stiff."},{n:"Paper Basketball",i:"🏀",d:"Medium",t:"Sports",s:7,m:20,p:"An inflatable paper ball that you colour like a basketball.",tip:"Keep the final hole open to blow into."},{n:"Returning Boomerang",i:"🔄",d:"Medium",t:"Sports",s:5,m:12,p:"A three-blade spinner that curves and flies back to you.",tip:"Throw it gently with a spin, and use it indoors or in calm wind."});
+Object.assign(ST,{
+"Basketball Hoop":["Backboard: fold a rectangle's long edges in about 1 cm to make a stiff frame.","Rim: roll an orange strip into a ring about 6 cm wide and tape it. Tape it to the front of the backboard.","Net: pleat a white rectangle into an accordion and cut small slits across it, then open it into a tube.","Draw a red square on the backboard above the rim.","Hang it on a wall and shoot with a paper ball."],
+"Tennis Racket":["Fold a long rectangle in half lengthwise and unfold.","Fold both long edges to the center crease to make a narrow strip.","Fold the top corners in diagonally and curve them into an oval head.","Weave thin white strips across the head as strings.","Wrap a sky blue strip around the handle for the grip."],
+"Paper Basketball":ST["Paper Football"].slice(0,6).concat(["Colour it orange and draw black curved lines like a basketball."]),
+"Returning Boomerang":["Take three strips of stiff paper, about 3 cm by 15 cm.","Fold each strip in half lengthwise and press it flat to stiffen it.","Join the three strips at the middle in a Y shape and tape them firmly.","Bend the tip of each blade up slightly, about 10 degrees, all in the same direction.","Hold it upright with a slight tilt and flick it forward with a spin. It curves and comes back to you."]});
+var pb=IMG["Paper Football"].slice(0,6);pb.push("50,12 76,34 82,64 50,90 18,64 24,34|48,14 52,14 52,90 48,90|14,48 86,48 86,52 14,52");
+Object.assign(IMG,{
+"Basketball Hoop":["14,10 86,10 86,50 14,50","14,10 86,10 86,50 14,50|30,50 70,50 74,56 70,62 30,62 26,56","14,10 86,10 86,50 14,50|30,50 70,50 74,56 70,62 30,62 26,56|32,62 68,62 60,90 40,90","14,10 86,10 86,50 14,50|30,50 70,50 74,56 70,62 30,62 26,56|32,62 68,62 60,90 40,90|42,24 58,24 58,36 42,36","14,10 86,10 86,50 14,50|30,50 70,50 74,56 70,62 30,62 26,56|32,62 68,62 60,90 40,90|42,24 58,24 58,36 42,36|62,2 74,2 78,10 74,18 62,18 58,10"],
+"Tennis Racket":["30,6 70,6 70,94 30,94","40,6 60,6 60,94 40,94","50,4 70,16 74,40 66,56 54,60 54,94 46,94 46,60 34,56 26,40 30,16","50,4 70,16 74,40 66,56 54,60 54,94 46,94 46,60 34,56 26,40 30,16|40,16 44,16 44,52 40,52|48,16 52,16 52,52 48,52|56,16 60,16 60,52 56,52","50,4 70,16 74,40 66,56 54,60 54,94 46,94 46,60 34,56 26,40 30,16|40,16 44,16 44,52 40,52|48,16 52,16 52,52 48,52|56,16 60,16 60,52 56,52|46,70 54,70 54,92 46,92"],
+"Paper Basketball":pb,
+"Returning Boomerang":["42,10 58,10 58,90 42,90","46,10 54,10 54,90 46,90","46,10 54,10 54,50 46,50|46,50 54,50 18,86 10,76|46,50 54,50 90,76 82,86","46,10 54,10 54,50 46,50|46,50 54,50 18,86 10,76|46,50 54,50 90,76 82,86|46,10 54,10 54,20 46,20|14,80 22,72 26,78 18,86|78,72 86,80 82,86 74,78","46,10 54,10 54,50 46,50|46,50 54,50 18,86 10,76|46,50 54,50 90,76 82,86|46,10 54,10 54,20 46,20|14,80 22,72 26,78 18,86|78,72 86,80 82,86 74,78"]});
+Object.assign(PAL,{"Basketball Hoop":["#fff","#f08a24"],"Tennis Racket":["#75aadb","#fff"],"Paper Basketball":["#f08a24","#fff"],"Returning Boomerang":["#f6b40e","#75aadb"]});
+Object.assign(CR,{"Tennis Racket":{0:"50,6 50,94"},"Paper Basketball":CR["Paper Football"]});
+Object.assign(FIN,{
+"Basketball Hoop":"#fff|14,10 86,10 86,50 14,50;#e0405a|38,22 62,22 62,38 38,38;#fff|42,26 58,26 58,34 42,34;#fff|32,62 68,62 60,92 40,92;#aab4c0|40,62 42,62 46,92 44,92;#aab4c0|50,62 52,62 52,92 50,92;#aab4c0|58,62 60,62 56,92 54,92;#f08a24|28,50 72,50 76,56 72,62 28,62 24,56;#f08a24|o84,16,8;#111|o84,16,2",
+"Tennis Racket":"#2b3340|46,62 54,62 54,94 46,94;#75aadb|50,4 72,16 76,40 66,58 54,62 46,62 34,58 24,40 28,16;#fff|50,12 66,20 68,40 62,52 50,56 38,52 32,40 34,20;#aab4c0|42,16 44,16 44,52 42,52;#aab4c0|49,12 51,12 51,56 49,56;#aab4c0|56,16 58,16 58,52 56,52;#75aadb|46,72 54,70 54,76 46,78;#75aadb|46,82 54,80 54,86 46,88;#d4e157|o84,84,8",
+"Paper Basketball":"#f08a24|o50,50,40;#111|48,10 52,10 52,90 48,90;#111|10,48 90,48 90,52 10,52;#111|22,24 27,22 33,50 27,78 22,76 28,50;#111|78,24 73,22 67,50 73,78 78,76 72,50",
+"Returning Boomerang":"#75aadb|46,10 54,10 54,50 46,50;#f6b40e|46,50 54,50 18,86 10,76;#75aadb|46,50 54,50 90,76 82,86;#fff|o50,50,5"});
+EXT["Basketball Hoop"]=["#fff|8,10 60,10 60,24 8,24;#f08a24|8,34 60,34 60,42 8,42;#fff|8,52 60,52 60,66 8,66;#f08a24|o14,90,8",[[20,"Backboard: white paper"],[42,"Rim: orange strip"],[62,"Net: white paper"],[92,"Ball: orange paper"]],"Hoop colours"];
+EXT["Tennis Racket"]=["#75aadb|8,10 60,10 60,24 8,24;#fff|8,34 60,34 60,40 8,40;#2b3340|8,52 60,52 60,66 8,66;#d4e157|o14,90,8",[[20,"Frame: sky blue paper"],[40,"Strings: white strips"],[62,"Handle: black paper"],[92,"Ball: yellow-green"]],"Racket colours"];
+EXT["Returning Boomerang"]=["#75aadb|8,12 60,12 60,22 8,22;#f6b40e|8,32 60,32 60,42 8,42;#75aadb|8,52 60,52 60,62 8,62;#fff|o14,86,6",[[20,"Blade 1: sky blue strip"],[40,"Blade 2: gold strip"],[60,"Blade 3: sky blue strip"],[88,"Centre tape: white"]],"Boomerang colours"];
+D.push({n:"Tennis Ball",i:"🎾",d:"Medium",t:"Sports",s:7,m:20,p:"An inflatable paper ball with white tennis seams.",tip:"Yellow-green paper makes it look real. Keep the hole open to blow into."});
+ST["Tennis Ball"]=ST["Paper Football"].slice(0,6).concat(["Colour it yellow-green and draw two white curved seams like a tennis ball."]);
+IMG["Tennis Ball"]=IMG["Paper Football"].slice(0,6).concat(["50,12 76,34 82,64 50,90 18,64 24,34|20,28 26,24 36,50 26,76 20,72 30,50|80,28 74,24 64,50 74,76 80,72 70,50"]);
+PAL["Tennis Ball"]=["#d4e157","#fff"];
+CR["Tennis Ball"]=CR["Paper Football"];
+FIN["Tennis Ball"]="#d4e157|o50,50,40;#fff|20,26 26,22 36,50 26,78 20,74 30,50;#fff|80,26 74,22 64,50 74,78 80,74 70,50";
+function real(r){r.querySelectorAll('svg polygon,svg circle').forEach(function(p){if(p.getAttribute('fill')=='none'||p.getAttribute('fill')=='url(#pg)'||p.getAttribute('fill')=='url(#pc)')return;var o=p.cloneNode();o.setAttribute('fill',p.tagName=='circle'?'url(#pc)':'url(#pg)');o.setAttribute('stroke','none');o.removeAttribute('filter');o.style.pointerEvents='none';p.setAttribute('filter','url(#sh)');p.parentNode.insertBefore(o,p.nextSibling)})}
 
     var df = "All", tf = "All";
 
@@ -336,6 +366,7 @@ FIN["Frisbee"]="#75aadb|50,8 78,22 92,50 78,78 50,92 22,78 8,50 22,22;#fff|50,22
         + '<h4>' + t("how_fold") + ' <small>(' + t("crease") + ')</small></h4>'
         + start(x.n)
         + '<ol>' + steps + '</ol></div>';
+      real(d);
       d.querySelector(".x").onclick = function () { d.close(); };
       d.onclick = function (e) { if (e.target == d) d.close(); };
       d.showModal();
