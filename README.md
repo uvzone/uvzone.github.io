@@ -7,6 +7,7 @@ UV's own website. Plain HTML + CSS + a little JavaScript, no build step.
 | `index.html` | Home page |
 | `jokes.html` + `jokes.js` | Joke Machine — add jokes to the list in `jokes.js` |
 | `about.html` | About Me — fill in favourites |
+| `arcade.html` | Mega Arcade — 12 mini games |
 | `style.css` | Colours and fonts for every page |
 
 ## Put it on GitHub Pages
