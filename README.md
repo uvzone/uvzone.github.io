@@ -8,6 +8,7 @@ UV's own website. Plain HTML + CSS + a little JavaScript, no build step.
 | `jokes.html` + `jokes.js` | Joke Machine — add jokes to the list in `jokes.js` |
 | `about.html` | About Me — fill in favourites |
 | `arcade.html` | Mega Arcade — 12 mini games |
+| `yash.html` + `yash-data/*.csv` | Yash — exam practice page; edit the CSV files to change questions |
 | `style.css` | Colours and fonts for every page |
 
 ## Put it on GitHub Pages

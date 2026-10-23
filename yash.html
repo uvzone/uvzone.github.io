@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>UV Zone · Yash</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&family=Baloo+Tammudu+2:wght@400;700&family=Baloo+Tamma+2:wght@400;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
+  <script src="lang.js"></script>
+  <style>
+    .hide { display: none !important; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 4px 12px; }
+    .tabs button { font-size: .95rem; padding: 6px 14px; background: var(--card); color: var(--ink); }
+    .tabs button.on { background: var(--pop); color: #fff; }
+    .row2 { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-block: 8px; }
+    select, input[type=text], textarea {
+      font: inherit; color: var(--ink); background: var(--card); border: 3px solid var(--ink);
+      border-radius: 12px; padding: 6px 10px; max-width: 100%;
+    }
+    textarea { width: 100%; min-height: 60px; }
+    label { display: block; font-weight: 700; margin-top: 8px; }
+    .timer { font-family: var(--display); font-size: 1.3rem; }
+    .qtxt { font-size: 1.15rem; font-weight: 700; margin-block: 8px; white-space: pre-wrap; }
+    .meta { font-size: .9rem; opacity: .8; }
+    .opt {
+      display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left;
+      margin-block: 6px; padding: 8px 12px; background: var(--card); color: var(--ink);
+      border: 3px solid var(--ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--ink);
+      font: inherit; cursor: pointer;
+    }
+    .opt .b { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--ink); text-align: center; line-height: 22px; font-weight: 700; font-size: .85rem; }
+    .opt.good { background: var(--leaf); }
+    .opt.bad { background: #f6b3a8; }
+    .opt:disabled { cursor: default; }
+    .expl { margin-top: 10px; padding: 8px 12px; border-left: 6px solid var(--ink); background: var(--sun); border-radius: 8px; }
+    dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin-block: 8px; }
+    dl.kv dt { font-weight: 700; }
+    dl.kv dd { margin: 0; }
+    pre { background: var(--card); border: 3px solid var(--ink); border-radius: 12px; padding: 8px 12px; overflow-x: auto; margin-block: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 2px dashed var(--ink); vertical-align: top; }
+    .pill { display: inline-block; padding: 1px 10px; border: 2px solid var(--ink); border-radius: 99px; font-size: .8rem; font-weight: 700; background: var(--card); white-space: nowrap; }
+    .pill.ok { background: var(--leaf); }
+    .tblwrap { overflow-x: auto; }
+    .err { color: #b3261e; font-weight: 700; }
+    .logitem { border-bottom: 2px dashed var(--ink); padding-block: 8px; }
+    .logitem button { font-size: .8rem; padding: 2px 10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <nav>
+      <a data-t="home" href="index.html">Home</a>
+      <a data-t="jokes" href="jokes.html">Jokes</a>
+      <a data-t="origami" href="origami.html">Origami</a>
+      <a data-t="arcade" href="arcade.html">Arcade</a>
+      <a data-t="yash" href="yash.html" class="here">Yash</a>
+      <a data-t="about" href="about.html">About Me</a>
+    </nav>
+
+    <section class="card blue">
+      <h1>📝 Yash · Placement Prep</h1>
+      <p class="meta">4 weeks · 26 Oct – 22 Nov 2026 · Pilot: Day 1–2</p>
+      <p><b>Yash, please check Day 1 and 2 first:</b> Are the questions fair? Are the answers right? Is the timer too tight? Anything confusing?</p>
+    </section>
+
+    <section class="card">
+      <div class="tabs" id="tabs">
+        <button data-tab="apt">Aptitude</button>
+        <button data-tab="cod">Coding</button>
+        <button data-tab="log">Error log</button>
+        <button data-tab="plan">4-week plan</button>
+      </div>
+      <p class="err hide" id="loaderr"></p>
+
+      <div id="apt" class="pane"></div>
+      <div id="cod" class="pane hide"></div>
+      <div id="log" class="pane hide"></div>
+      <div id="plan" class="pane hide"></div>
+    </section>
+
+    <footer>Data files live in the <code>yash-data</code> folder. Notes and scores stay in this browser only.</footer>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+  var D = "yash-data/";
+  var apt = [], cod = [], plan = [];
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+
+  function parseCSV(text) {
+    var rows = [], row = [], f = "", q = false, i, c;
+    text = text.replace(/^﻿/, "");
+    for (i = 0; i < text.length; i++) {
+      c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; }
+        else f += c;
+      } else if (c === '"') q = true;
+      else if (c === ",") { row.push(f); f = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (c === "\r" && text[i + 1] === "\n") i++;
+        row.push(f); f = ""; rows.push(row); row = [];
+      } else f += c;
+    }
+    if (f !== "" || row.length) { row.push(f); rows.push(row); }
+    rows = rows.filter(function (r) { return r.some(function (x) { return x.trim() !== ""; }); });
+    if (!rows.length) return [];
+    var h = rows[0].map(function (x) { return x.trim(); });
+    return rows.slice(1).map(function (r) { var o = {}; h.forEach(function (k, j) { o[k] = (r[j] || "").trim(); }); return o; });
+  }
+  function load(name) {
+    return fetch(D + name + "?v=" + Date.now()).then(function (r) {
+      if (!r.ok) throw new Error(name + " (" + r.status + ")");
+      return r.text();
+    }).then(parseCSV);
+  }
+
+  /* ---------- tabs ---------- */
+  function showTab(t) {
+    if (!$(t)) t = "apt";
+    document.querySelectorAll(".pane").forEach(function (p) { p.classList.toggle("hide", p.id !== t); });
+    document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.tab === t); });
+    store("pp_tab", t);
+  }
+  $("tabs").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
+
+  /* ---------- aptitude ---------- */
+  var aptState = null, timerId = null;
+  function days(list) { var s = {}; list.forEach(function (r) { s[r.day] = 1; }); return Object.keys(s).sort(function (a, b) { return a - b; }); }
+  function fmt(s) { var m = Math.floor(s / 60), x = s % 60; return m + ":" + (x < 10 ? "0" : "") + x; }
+
+  function renderAptHome() {
+    clearInterval(timerId);
+    aptState = null;
+    var ds = days(apt), hist = store("pp_apt_hist") || [];
+    var h = '<div class="row2"><label for="aday" style="margin:0">Day</label><select id="aday">' +
+      ds.map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("") +
+      '</select><button id="astart" class="orangebtn">Start timed set</button></div>';
+    if (hist.length) {
+      h += "<h3>History</h3>" + hist.slice().reverse().slice(0, 10).map(function (x) {
+        return '<div class="logitem">Day ' + esc(x.day) + " · <b>" + x.score + "/" + x.total + "</b> · " + fmt(x.secs) + " · " + esc(x.when) +
+          (x.wrong && x.wrong.length ? '<div class="meta">Wrong: ' + esc(x.wrong.join(", ")) + "</div>" : "") + "</div>";
+      }).join("");
+    }
+    $("apt").innerHTML = h;
+    $("astart").onclick = function () { startApt($("aday").value); };
+  }
+  function startApt(day) {
+    aptState = { qs: apt.filter(function (r) { return r.day === day; }), i: 0, score: 0, wrong: [], day: day, t0: Date.now(), locked: false };
+    timerId = setInterval(function () { var e = $("atimer"); if (e) e.textContent = "⏱ " + fmt(Math.round((Date.now() - aptState.t0) / 1000)); }, 500);
+    renderQ();
+  }
+  function renderQ() {
+    var s = aptState, q = s.qs[s.i];
+    var h = '<div class="row2"><span class="timer" id="atimer">⏱ 0:00</span><span class="meta">Q ' + (s.i + 1) + "/" + s.qs.length + " · " + esc(q.id) + " · " + esc(q.topic) + " · " + esc(q.difficulty) + " · target " + esc(q.target_sec) + 's</span></div>';
+    h += '<div class="qtxt">' + esc(q.question) + "</div>";
+    ["a", "b", "c", "d"].forEach(function (k) {
+      if (q["option_" + k]) h += '<button class="opt" data-k="' + k + '"><span class="b">' + k.toUpperCase() + "</span><span>" + esc(q["option_" + k]) + "</span></button>";
+    });
+    h += '<div id="aexp"></div><div class="row2"><button id="anext" class="hide">' + (s.i + 1 < s.qs.length ? "Next" : "Finish") + "</button></div>";
+    $("apt").innerHTML = h;
+    s.locked = false;
+    $("apt").querySelectorAll(".opt").forEach(function (b) { b.onclick = function () { answer(b.dataset.k); }; });
+    $("anext").onclick = function () { s.i++; if (s.i < s.qs.length) renderQ(); else finishApt(); };
+  }
+  function answer(k) {
+    var s = aptState; if (s.locked) return; s.locked = true;
+    var q = s.qs[s.i], right = q.answer.toLowerCase().trim();
+    if (k === right) s.score++; else s.wrong.push(q.id);
+    $("apt").querySelectorAll(".opt").forEach(function (b) {
+      b.disabled = true;
+      if (b.dataset.k === right) b.classList.add("good");
+      else if (b.dataset.k === k) b.classList.add("bad");
+    });
+    $("aexp").innerHTML = '<div class="expl"><b>' + (k === right ? "Correct" : "Answer: " + right.toUpperCase()) + ".</b> " + esc(q.explanation) + "</div>";
+    $("anext").classList.remove("hide");
+  }
+  function finishApt() {
+    clearInterval(timerId);
+    var s = aptState, secs = Math.round((Date.now() - s.t0) / 1000);
+    var hist = store("pp_apt_hist") || [];
+    hist.push({ day: s.day, score: s.score, total: s.qs.length, secs: secs, wrong: s.wrong, when: new Date().toLocaleDateString() });
+    store("pp_apt_hist", hist);
+    $("apt").innerHTML = '<h2>Day ' + esc(s.day) + ": " + s.score + "/" + s.qs.length + "</h2><p>Time " + fmt(secs) + "</p>" +
+      (s.wrong.length ? "<p>Wrong: " + esc(s.wrong.join(", ")) + " — add them to the Error log.</p>" : "<p>Perfect! 🎉</p>") +
+      '<button id="aback">Back</button>';
+    $("aback").onclick = renderAptHome;
+  }
+
+  /* ---------- coding ---------- */
+  function renderCod() {
+    var ds = days(cod);
+    $("cod").innerHTML = '<div class="row2"><label for="cday" style="margin:0">Day</label><select id="cday">' +
+      ds.map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("") + '</select></div>' +
+      '<p class="meta">Reminder: use <code>long long</code> for big sums, and start with <code>ios::sync_with_stdio(false); cin.tie(nullptr);</code></p><div id="clist"></div>';
+    $("cday").onchange = drawCod;
+    drawCod();
+  }
+  function drawCod() {
+    var d = $("cday").value;
+    $("clist").innerHTML = cod.filter(function (r) { return r.day === d; }).map(function (r) {
+      var edges = (r.edge_cases || "").split("|").map(function (x) { return x.trim(); }).filter(Boolean);
+      return '<div class="card sun" style="margin-block:10px"><h3>' + esc(r.id) + " · " + esc(r.title) + '</h3><p class="meta">' +
+        esc(r.topic) + " · " + esc(r.difficulty) + " · target " + esc(r.target_min) + " min</p><p style=\"white-space:pre-wrap\">" + esc(r.problem) + "</p>" +
+        '<dl class="kv"><dt>Input</dt><dd>' + esc(r.input_format) + "</dd><dt>Output</dt><dd>" + esc(r.output_format) + "</dd><dt>Limits</dt><dd>" + esc(r.constraints) + "</dd></dl>" +
+        "<b>Sample input</b><pre>" + esc((r.sample_input || "").replace(/\\n/g, "\n")) + "</pre><b>Sample output</b><pre>" + esc((r.sample_output || "").replace(/\\n/g, "\n")) + "</pre>" +
+        (edges.length ? "<details><summary>Edge cases</summary><ul>" + edges.map(function (e) { return "<li>" + esc(e) + "</li>"; }).join("") + "</ul></details>" : "") +
+        (r.trap ? "<details><summary>Trap</summary><p>" + esc(r.trap) + "</p></details>" : "") +
+        (r.hint ? "<details><summary>Hint</summary><p>" + esc(r.hint) + "</p></details>" : "") + "</div>";
+    }).join("");
+  }
+
+  /* ---------- error log ---------- */
+  var TYPES = ["Didn't know", "Careless", "Ran out of time", "Edge case missed", "Overflow", "Time limit exceeded"];
+  function renderLog() {
+    var log = store("pp_log") || [];
+    var h = '<label for="lid">Question ID</label><input type="text" id="lid" placeholder="A1-03">' +
+      '<label for="ltopic">Topic</label><input type="text" id="ltopic">' +
+      '<label for="ltype">Mistake type</label><select id="ltype">' + TYPES.map(function (t) { return "<option>" + esc(t) + "</option>"; }).join("") + "</select>" +
+      '<label for="lwhat">What went wrong</label><textarea id="lwhat"></textarea>' +
+      '<label for="lfix">Fix</label><textarea id="lfix"></textarea>' +
+      '<div class="row2"><button id="ladd" class="orangebtn">Add</button><button id="lcopy">Copy log as CSV</button><span class="meta" id="lmsg"></span></div>';
+    var counts = {};
+    log.forEach(function (x) { counts[x.type] = (counts[x.type] || 0) + 1; });
+    if (log.length) h += "<h3>Summary</h3><p>" + Object.keys(counts).map(function (k) { return '<span class="pill">' + esc(k) + ": " + counts[k] + "</span>"; }).join(" ") + "</p>";
+    h += log.map(function (x, i) {
+      return '<div class="logitem"><b>' + esc(x.id) + "</b> · " + esc(x.topic) + ' · <span class="pill">' + esc(x.type) + "</span><br>" + esc(x.what) +
+        (x.fix ? "<br><i>Fix:</i> " + esc(x.fix) : "") + ' <button data-del="' + i + '">Delete</button></div>';
+    }).join("");
+    $("log").innerHTML = h;
+    $("ladd").onclick = function () {
+      var e = { id: $("lid").value.trim(), topic: $("ltopic").value.trim(), type: $("ltype").value, what: $("lwhat").value.trim(), fix: $("lfix").value.trim(), when: new Date().toISOString().slice(0, 10) };
+      if (!e.id && !e.what) { $("lmsg").textContent = "Add an ID or what went wrong."; return; }
+      log.push(e); store("pp_log", log); renderLog();
+    };
+    $("lcopy").onclick = function () {
+      var q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+      var csv = "date,id,topic,type,what,fix\n" + log.map(function (x) { return [x.when, x.id, x.topic, x.type, x.what, x.fix].map(q).join(","); }).join("\n");
+      var done = function (ok) { $("lmsg").textContent = ok ? "Copied!" : "Could not copy — select the text manually."; if (!ok) window.prompt && 0; };
+      try { navigator.clipboard.writeText(csv).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+    };
+    $("log").querySelectorAll("[data-del]").forEach(function (b) {
+      b.onclick = function () { log.splice(+b.dataset.del, 1); store("pp_log", log); renderLog(); };
+    });
+  }
+
+  /* ---------- plan ---------- */
+  function renderPlan() {
+    var weeks = {};
+    plan.forEach(function (r) { (weeks[r.week] = weeks[r.week] || []).push(r); });
+    $("plan").innerHTML = Object.keys(weeks).sort(function (a, b) { return a - b; }).map(function (w) {
+      return "<h3>Week " + esc(w) + '</h3><div class="tblwrap"><table><tr><th>Day</th><th>Date</th><th>Aptitude</th><th>Coding</th><th></th></tr>' +
+        weeks[w].map(function (r) {
+          var ok = (r.questions_ready || "").toLowerCase() === "yes";
+          return "<tr><td>" + esc(r.day) + "</td><td>" + esc(r.weekday) + " " + esc(r.date) + "</td><td>" + esc(r.aptitude_focus) + "</td><td>" + esc(r.coding_focus) +
+            '</td><td><span class="pill' + (ok ? " ok" : "") + '">' + (ok ? "Ready" : "After review") + "</span></td></tr>";
+        }).join("") + "</table></div>";
+    }).join("");
+  }
+
+  /* ---------- boot ---------- */
+  renderLog();
+  Promise.all([load("aptitude_questions.csv"), load("coding_questions.csv"), load("plan.csv")]).then(function (r) {
+    apt = r[0]; cod = r[1]; plan = r[2];
+    renderAptHome(); renderCod(); renderPlan();
+  }).catch(function (e) {
+    var el = $("loaderr");
+    el.textContent = "Could not load data files: " + e.message + ". Open this page from the website, not by double-clicking the file.";
+    el.classList.remove("hide");
+  });
+  showTab(store("pp_tab") || "apt");
+})();
+</script>
+</body>
+</html>
