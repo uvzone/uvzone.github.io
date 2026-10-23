@@ -1,281 +1,274 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>UV Zone · Yash</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;700&family=Baloo+Tammudu+2:wght@400;700&family=Baloo+Tamma+2:wght@400;700&display=swap">
-  <link rel="stylesheet" href="style.css">
-  <script src="theme.js"></script>
-  <script src="lang.js"></script>
-  <style>
-    .hide { display: none !important; }
-    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 4px 12px; }
-    .tabs button { font-size: .95rem; padding: 6px 14px; background: var(--card); color: var(--ink); }
-    .tabs button.on { background: var(--pop); color: #fff; }
-    .row2 { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-block: 8px; }
-    select, input[type=text], textarea {
-      font: inherit; color: var(--ink); background: var(--card); border: 3px solid var(--ink);
-      border-radius: 12px; padding: 6px 10px; max-width: 100%;
-    }
-    textarea { width: 100%; min-height: 60px; }
-    label { display: block; font-weight: 700; margin-top: 8px; }
-    .timer { font-family: var(--display); font-size: 1.3rem; }
-    .qtxt { font-size: 1.15rem; font-weight: 700; margin-block: 8px; white-space: pre-wrap; }
-    .meta { font-size: .9rem; opacity: .8; }
-    .opt {
-      display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left;
-      margin-block: 6px; padding: 8px 12px; background: var(--card); color: var(--ink);
-      border: 3px solid var(--ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--ink);
-      font: inherit; cursor: pointer;
-    }
-    .opt .b { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--ink); text-align: center; line-height: 22px; font-weight: 700; font-size: .85rem; }
-    .opt.good { background: var(--leaf); }
-    .opt.bad { background: #f6b3a8; }
-    .opt:disabled { cursor: default; }
-    .expl { margin-top: 10px; padding: 8px 12px; border-left: 6px solid var(--ink); background: var(--sun); border-radius: 8px; }
-    dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin-block: 8px; }
-    dl.kv dt { font-weight: 700; }
-    dl.kv dd { margin: 0; }
-    pre { background: var(--card); border: 3px solid var(--ink); border-radius: 12px; padding: 8px 12px; overflow-x: auto; margin-block: 6px; }
-    table { width: 100%; border-collapse: collapse; font-size: .95rem; }
-    th, td { text-align: left; padding: 6px 8px; border-bottom: 2px dashed var(--ink); vertical-align: top; }
-    .pill { display: inline-block; padding: 1px 10px; border: 2px solid var(--ink); border-radius: 99px; font-size: .8rem; font-weight: 700; background: var(--card); white-space: nowrap; }
-    .pill.ok { background: var(--leaf); }
-    .tblwrap { overflow-x: auto; }
-    .err { color: #b3261e; font-weight: 700; }
-    .logitem { border-bottom: 2px dashed var(--ink); padding-block: 8px; }
-    .logitem button { font-size: .8rem; padding: 2px 10px; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Aptitude Mock Tests</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* Layout: exam hall — question palette on the left, one question at a time on an answer sheet, OMR bubbles */
+:root{
+  --paper:#f3f5f9; --sheet:#ffffff; --ink:#18202e; --muted:#5b6577; --rule:#d9dfe8;
+  --mark:#2448b8; --mark-soft:#e3e9fb; --good:#1c7a4a; --good-soft:#e1f3e9; --bad:#b3362d; --bad-soft:#fbe6e4; --flag:#9a6400; --flag-soft:#fbf0d9;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11151c; --sheet:#181e28; --ink:#e7ebf2; --muted:#98a2b4; --rule:#2c3442;
+  --mark:#8ea8ff; --mark-soft:#1f2a48; --good:#5fd197; --good-soft:#163527; --bad:#ff8a80; --bad-soft:#3d1c1a; --flag:#f0b54a; --flag-soft:#3a2c12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11151c; --sheet:#181e28; --ink:#e7ebf2; --muted:#98a2b4; --rule:#2c3442;
+  --mark:#8ea8ff; --mark-soft:#1f2a48; --good:#5fd197; --good-soft:#163527; --bad:#ff8a80; --bad-soft:#3d1c1a; --flag:#f0b54a; --flag-soft:#3a2c12; color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 var(--body)}
+.wrap{max-width:980px;margin:0 auto;padding-block:24px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+h1{font:800 clamp(28px,5vw,40px)/1.1 var(--display);margin:0;text-wrap:balance}
+h2{font:800 20px/1.2 var(--display);margin:0}
+.meta,.lbl{font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meta{color:var(--mark)}
+p{margin:0}
+.note{color:var(--muted);font-size:15px;max-width:68ch}
+button{font-family:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.btn{font:700 15px var(--body);background:var(--mark);color:var(--sheet);border:0;border-radius:6px;padding:9px 16px;cursor:pointer}
+.btn.ghost{background:none;color:var(--mark);border:1px solid var(--mark)}
+.btn.quiet{background:none;color:var(--muted);border:1px solid var(--rule)}
+.btn:disabled{opacity:.45;cursor:default}
+input{font:15px var(--body);color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:8px 10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:16px;display:grid;gap:10px;align-content:start}
+.card .lvl{font:800 22px var(--display)}
+.card .lvl.hard{color:var(--bad)}
+.blueprint{font:14px/1.5 var(--body);color:var(--muted)}
+.done{font:600 12px var(--mono);color:var(--good)}
+/* exam */
+.exam{display:grid;gap:16px;grid-template-columns:200px minmax(0,1fr);align-items:start}
+@media (max-width:720px){.exam{grid-template-columns:minmax(0,1fr)}}
+.side{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:12px;display:grid;gap:12px;position:sticky;top:max(12px,env(safe-area-inset-top,0px))}
+@media (max-width:720px){.side{position:static}}
+.clock{font:600 26px var(--mono);font-variant-numeric:tabular-nums}
+.clock.low{color:var(--bad)}
+.pal{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.pal button{font:600 13px var(--mono);aspect-ratio:1;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:5px;cursor:pointer;padding:0}
+.pal button.ans{background:var(--mark);color:var(--sheet);border-color:var(--mark)}
+.pal button.flag{box-shadow:inset 0 -4px 0 var(--flag)}
+.pal button.cur{outline:2px solid var(--ink);outline-offset:1px}
+.pal .sec{grid-column:1/-1;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.legend{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:20px;display:grid;gap:16px;min-width:0}
+.qhead{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.qhead .num{font:800 20px var(--display)}
+.tag{font:600 12px var(--mono);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:1px 9px}
+.qtext{font-size:17px;white-space:pre-line}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;font:16px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:7px;padding:11px 12px;cursor:pointer;width:100%}
+.bub{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--muted);display:grid;place-items:center;font:600 12px var(--mono);color:var(--muted)}
+.opt.picked{border-color:var(--mark)}
+.opt.picked .bub{background:var(--mark);border-color:var(--mark);color:var(--sheet)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.right .bub{background:var(--good);border-color:var(--good);color:var(--sheet)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .bub{background:var(--bad);border-color:var(--bad);color:var(--sheet)}
+.opt:disabled{cursor:default}
+.expl{background:var(--paper);border-left:3px solid var(--mark);padding:10px 12px;font-size:15px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}
+/* result */
+.score{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:14px;display:grid;gap:2px}
+.stat b{font:800 28px var(--display);font-variant-numeric:tabular-nums}
+.stat.main{background:var(--mark-soft);border-color:var(--mark)}
+.tablewrap{overflow-x:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.pill{font:600 11px var(--mono);padding:2px 8px;border-radius:999px}
+.pill.r{background:var(--good-soft);color:var(--good)}.pill.w{background:var(--bad-soft);color:var(--bad)}.pill.s{background:var(--paper);color:var(--muted);border:1px solid var(--rule)}
+.ask{background:var(--sheet);border:1px solid var(--mark);border-radius:8px;padding:14px 18px;display:grid;gap:6px}
+.ask ol{margin:0;padding-left:20px}
+.msg{font-size:14px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 
-    <nav>
-      <a data-t="home" href="index.html">Home</a>
-      <a data-t="jokes" href="jokes.html">Jokes</a>
-      <a data-t="origami" href="origami.html">Origami</a>
-      <a data-t="arcade" href="arcade.html">Arcade</a>
-      <a data-t="yash" href="yash.html" class="here">Yash</a>
-      <a data-t="about" href="about.html">About Me</a>
-    </nav>
-
-    <section class="card blue">
-      <h1>📝 Yash · Placement Prep</h1>
-      <p class="meta">4 weeks · 26 Oct – 22 Nov 2026 · Pilot: Day 1–2</p>
-      <p><b>Yash, please check Day 1 and 2 first:</b> Are the questions fair? Are the answers right? Is the timer too tight? Anything confusing?</p>
-    </section>
-
-    <section class="card">
-      <div class="tabs" id="tabs">
-        <button data-tab="apt">Aptitude</button>
-        <button data-tab="cod">Coding</button>
-        <button data-tab="log">Error log</button>
-        <button data-tab="plan">4-week plan</button>
-      </div>
-      <p class="err hide" id="loaderr"></p>
-
-      <div id="apt" class="pane"></div>
-      <div id="cod" class="pane hide"></div>
-      <div id="log" class="pane hide"></div>
-      <div id="plan" class="pane hide"></div>
-    </section>
-
-    <footer>Data files live in the <code>yash-data</code> folder. Notes and scores stay in this browser only.</footer>
-  </div>
+<div class="wrap" id="app"></div>
 
 <script>
-(function () {
-  "use strict";
-  var D = "yash-data/";
-  var apt = [], cod = [], plan = [];
-  var $ = function (id) { return document.getElementById(id); };
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-  function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+const EXAMS = [{"code": "D1R", "day": "Day 1", "level": "Regular", "minutes": 30, "questions": [{"n": 1, "id": "D1R-01", "section": "Verbal", "topic": "Sentence Correction", "text": "In which sentence is the word \"effect\" used incorrectly?", "options": ["The medicine took effect within an hour.", "Lack of sleep can effect your concentration.", "The new policy will effect major changes in hiring.", "The ban comes into effect from Monday."], "answer": 1, "expl": "\"Affect\" is the verb for influencing something. \"Effect\" as a verb means to bring about, as in the first option."}, {"n": 2, "id": "D1R-02", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the correct option: Each of the students ___ the assignment on time.", "options": ["are submitting", "have submitted", "has submitted", "were submitted"], "answer": 2, "expl": "\"Each\" is singular, so it takes \"has\"."}, {"n": 3, "id": "D1R-03", "section": "Verbal", "topic": "Sentence Correction", "text": "Hardly had he reached the station ___ the train left.", "options": ["than", "when", "while", "then"], "answer": 1, "expl": "\"Hardly ... when\" is the fixed pairing. \"No sooner\" takes \"than\"."}, {"n": 4, "id": "D1R-04", "section": "Verbal", "topic": "Sentence Correction", "text": "Fill in the blank: He is senior ___ me by two years.", "options": ["over", "to", "from", "than"], "answer": 1, "expl": "Senior, junior, superior and inferior take \"to\", not \"than\"."}, {"n": 5, "id": "D1R-05", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the best version of the underlined part: [If I was you], I would accept the offer.", "options": ["If I were you", "If I am you", "If I had been you", "If I was you"], "answer": 0, "expl": "Hypothetical present uses the subjunctive \"were\"."}, {"n": 6, "id": "D1R-06", "section": "Verbal", "topic": "Article Usage", "text": "She is ___ honest woman.", "options": ["a", "no article", "an", "the"], "answer": 2, "expl": "\"Honest\" starts with a vowel sound (silent h)."}, {"n": 7, "id": "D1R-07", "section": "Verbal", "topic": "Article Usage", "text": "___ Ganga is a sacred river.", "options": ["No article", "An", "A", "The"], "answer": 3, "expl": "Names of rivers take \"the\"."}, {"n": 8, "id": "D1R-08", "section": "Verbal", "topic": "Article Usage", "text": "He plays ___ guitar beautifully.", "options": ["a", "an", "the", "no article"], "answer": 2, "expl": "Musical instruments take \"the\" after \"play\"."}, {"n": 9, "id": "D1R-09", "section": "Verbal", "topic": "Article Usage", "text": "Which noun cannot be preceded by the indefinite article \"a\"?", "options": ["book", "chair", "advice", "pen"], "answer": 2, "expl": "Advice is uncountable; say \"a piece of advice\"."}, {"n": 10, "id": "D1R-10", "section": "Verbal", "topic": "Article Usage", "text": "He is ___ European and holds ___ MBA.", "options": ["an, an", "an, a", "a, a", "a, an"], "answer": 3, "expl": "\"European\" starts with a \"y\" sound; \"MBA\" starts with an \"em\" sound."}, {"n": 11, "id": "D1R-11", "section": "Quant", "topic": "Speed Time Distance", "text": "A car covers 240 km in 4 hours. By how much must its speed increase to cover the same distance in 3 hours?", "options": ["20 km/h", "15 km/h", "25 km/h", "30 km/h"], "answer": 0, "expl": "240/4 = 60 and 240/3 = 80, so 20 km/h more."}, {"n": 12, "id": "D1R-12", "section": "Quant", "topic": "Speed Time Distance", "text": "Two trains, 120 m and 180 m long, run in opposite directions at 40 km/h and 50 km/h. How long do they take to cross each other?", "options": ["18 s", "15 s", "12 s", "10 s"], "answer": 2, "expl": "Relative speed 90 km/h = 25 m/s. Distance 300 m. 300/25 = 12 s."}, {"n": 13, "id": "D1R-13", "section": "Quant", "topic": "Sequence and Series", "text": "Find the 10th term of the AP 3, 7, 11, ...", "options": ["35", "40", "39", "43"], "answer": 2, "expl": "a + 9d = 3 + 36 = 39."}, {"n": 14, "id": "D1R-14", "section": "Quant", "topic": "Sequence and Series", "text": "Find the sum of the first 6 terms of the GP 2, 6, 18, ...", "options": ["726", "1458", "364", "728"], "answer": 3, "expl": "2(3^6 − 1)/(3 − 1) = 728."}, {"n": 15, "id": "D1R-15", "section": "Quant", "topic": "Permutations and Combinations", "text": "In how many ways can the letters of the word LEADER be arranged?", "options": ["720", "180", "360", "240"], "answer": 2, "expl": "6!/2! = 360 (E repeats)."}, {"n": 16, "id": "D1R-16", "section": "Quant", "topic": "Permutations and Combinations", "text": "A committee of 3 is chosen from 5 men and 4 women. In how many ways can it include at least one woman?", "options": ["80", "64", "84", "74"], "answer": 3, "expl": "C(9,3) − C(5,3) = 84 − 10 = 74."}, {"n": 17, "id": "D1R-17", "section": "Quant", "topic": "Mixtures and Alligations", "text": "In what ratio must rice at ₹40/kg be mixed with rice at ₹55/kg to get a mixture worth ₹45/kg?", "options": ["1 : 2", "3 : 2", "2 : 3", "2 : 1"], "answer": 3, "expl": "Alligation: (55 − 45) : (45 − 40) = 10 : 5 = 2 : 1."}, {"n": 18, "id": "D1R-18", "section": "Quant", "topic": "Logarithms", "text": "If log 2 = 0.3010, what is log 8?", "options": ["0.9300", "0.6020", "1.2040", "0.9030"], "answer": 3, "expl": "log 8 = 3 log 2 = 0.9030."}, {"n": 19, "id": "D1R-19", "section": "Quant", "topic": "Probability", "text": "Two dice are thrown. What is the probability that the sum is 8?", "options": ["1/6", "1/9", "7/36", "5/36"], "answer": 3, "expl": "(2,6),(3,5),(4,4),(5,3),(6,2): 5 outcomes of 36."}, {"n": 20, "id": "D1R-20", "section": "Quant", "topic": "Probability", "text": "A bag has 4 red and 6 blue balls. Two are drawn at random. What is the probability both are red?", "options": ["1/5", "2/5", "2/15", "4/25"], "answer": 2, "expl": "C(4,2)/C(10,2) = 6/45 = 2/15."}, {"n": 21, "id": "D1R-21", "section": "Logical", "topic": "Series Completion", "text": "5, 11, 23, 47, 95, ?", "options": ["190", "191", "193", "189", "None of these"], "answer": 1, "expl": "Each term = previous × 2 + 1."}, {"n": 22, "id": "D1R-22", "section": "Logical", "topic": "Series Completion", "text": "2, 5, 10, 17, 26, ?", "options": ["36", "38", "35", "37", "None of these"], "answer": 3, "expl": "n² + 1 for n = 1, 2, 3, ..."}, {"n": 23, "id": "D1R-23", "section": "Logical", "topic": "Series Completion", "text": "4, 9, 25, 49, 121, ?", "options": ["169", "144", "161", "143", "None of these"], "answer": 0, "expl": "Squares of primes: 2, 3, 5, 7, 11, 13."}, {"n": 24, "id": "D1R-24", "section": "Logical", "topic": "Series Completion", "text": "7, 10, 16, 25, 37, ?", "options": ["52", "51", "49", "50", "None of these"], "answer": 0, "expl": "Differences 3, 6, 9, 12, 15."}, {"n": 25, "id": "D1R-25", "section": "Logical", "topic": "Series Completion", "text": "1, 2, 6, 24, 120, ?", "options": ["600", "620", "710", "700", "None of these"], "answer": 4, "expl": "Factorials: 6! = 720, which is not listed."}, {"n": 26, "id": "D1R-26", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the value of x?\n(I) 3x + 2 = 11\n(II) x² = 9", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "I gives x = 3. II gives x = 3 or −3."}, {"n": 27, "id": "D1R-27", "section": "Logical", "topic": "Data Sufficiency", "text": "Is the integer n odd?\n(I) n + 3 is even.\n(II) 2n is even.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "I alone: n is odd. II is true for every integer."}, {"n": 28, "id": "D1R-28", "section": "Logical", "topic": "Data Sufficiency", "text": "What is Ram's age?\n(I) Ram is 5 years older than Shyam.\n(II) The sum of their ages is 35.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 1, "expl": "Together: R − S = 5 and R + S = 35, so R = 20."}, {"n": 29, "id": "D1R-29", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the area of a square?\n(I) Its perimeter is 20 cm.\n(II) Its diagonal is 5√2 cm.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 3, "expl": "Either one gives side = 5 cm."}, {"n": 30, "id": "D1R-30", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the speed of the train?\n(I) The train is 200 m long.\n(II) It passes a man walking in the same direction in 20 seconds.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 2, "expl": "The man's speed is unknown, so even both together are not enough."}]}, {"code": "D1H", "day": "Day 1", "level": "Hard", "minutes": 30, "questions": [{"n": 1, "id": "D1H-01", "section": "Verbal", "topic": "Sentence Correction", "text": "In which sentence is the word \"eminent\" used incorrectly?", "options": ["The storm clouds signalled that danger was eminent.", "Several eminent jurists signed the letter.", "An eminent scientist chaired the panel.", "She is eminent in the field of genetics."], "answer": 0, "expl": "Danger that is about to happen is \"imminent\". \"Eminent\" means distinguished."}, {"n": 2, "id": "D1H-02", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the best version of the underlined part: Not only the manager but also the employees [was responsible] for the delay.", "options": ["has been responsible", "was responsible", "were responsible", "is responsible"], "answer": 2, "expl": "With \"not only ... but also\", the verb agrees with the nearer subject, \"employees\"."}, {"n": 3, "id": "D1H-03", "section": "Verbal", "topic": "Sentence Correction", "text": "No sooner had she left the house ___ it began to rain.", "options": ["than", "that", "when", "then"], "answer": 0, "expl": "\"No sooner ... than\" is the fixed pairing."}, {"n": 4, "id": "D1H-04", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the best version: [Being a rainy day, the match was cancelled.]", "options": ["As being a rainy day, the match was cancelled.", "It being a rainy day, the match was cancelled.", "Being a rainy day, the match was cancelled.", "Being rainy, the day cancelled the match."], "answer": 1, "expl": "The original says the match was a rainy day. \"It being\" makes a correct absolute phrase."}, {"n": 5, "id": "D1H-05", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the best version of the underlined part: She likes [swimming, to cycle and running].", "options": ["swimming, cycling and running", "swim, cycle and running", "swimming, to cycle and running", "to swim, cycling and to run"], "answer": 0, "expl": "Items in a list must be parallel."}, {"n": 6, "id": "D1H-06", "section": "Verbal", "topic": "Article Usage", "text": "Which group of words can ALL be preceded by \"an\"?", "options": ["hour, honour, MBA", "one-day, heir, apple", "honest, European, umbrella", "hour, university, MBA"], "answer": 0, "expl": "University, European and one-day start with consonant sounds (y, y, w)."}, {"n": 7, "id": "D1H-07", "section": "Verbal", "topic": "Article Usage", "text": "___ Times of India is ___ English daily.", "options": ["The, an", "A, an", "No article, an", "The, a"], "answer": 0, "expl": "Newspaper names take \"the\"; \"English\" starts with a vowel sound."}, {"n": 8, "id": "D1H-08", "section": "Verbal", "topic": "Article Usage", "text": "He was ___ first to arrive and ___ last to leave.", "options": ["no article, no article", "the, the", "the, a", "a, the"], "answer": 1, "expl": "Ordinals like first and last take \"the\"."}, {"n": 9, "id": "D1H-09", "section": "Verbal", "topic": "Article Usage", "text": "Mount Everest is ___ highest peak in ___ Himalayas.", "options": ["no article, the", "the, the", "the, no article", "a, the"], "answer": 1, "expl": "Superlatives and mountain ranges take \"the\"; single peaks do not."}, {"n": 10, "id": "D1H-10", "section": "Verbal", "topic": "Article Usage", "text": "Find the part with the error: He gave me / an useful / piece of / advice.", "options": ["piece of", "advice", "He gave me", "an useful"], "answer": 3, "expl": "\"Useful\" starts with a \"y\" sound, so it takes \"a\"."}, {"n": 11, "id": "D1H-11", "section": "Quant", "topic": "Speed Time Distance", "text": "A man rows 30 km downstream in 3 hours and 18 km upstream in 3 hours. What is the speed of the stream?", "options": ["2 km/h", "3 km/h", "4 km/h", "1 km/h"], "answer": 0, "expl": "Downstream 10, upstream 6. Stream = (10 − 6)/2 = 2."}, {"n": 12, "id": "D1H-12", "section": "Quant", "topic": "Speed Time Distance", "text": "Walking at 3/4 of his usual speed, a man reaches 20 minutes late. What is his usual time?", "options": ["80 minutes", "40 minutes", "60 minutes", "75 minutes"], "answer": 2, "expl": "Time becomes 4/3 of usual. The extra 1/3 is 20 minutes, so usual time is 60."}, {"n": 13, "id": "D1H-13", "section": "Quant", "topic": "Sequence and Series", "text": "Three numbers in AP have a sum of 27 and a product of 504. What is the largest?", "options": ["14", "15", "13", "12"], "answer": 0, "expl": "Middle term = 9. 9(81 − d²) = 504 gives d = 5, so the numbers are 4, 9, 14."}, {"n": 14, "id": "D1H-14", "section": "Quant", "topic": "Sequence and Series", "text": "If a, b, c are in GP, the roots of ax² + 2bx + c = 0 are:", "options": ["imaginary", "real and distinct", "cannot be determined", "real and equal"], "answer": 3, "expl": "Discriminant = 4b² − 4ac = 0 because b² = ac."}, {"n": 15, "id": "D1H-15", "section": "Quant", "topic": "Permutations and Combinations", "text": "In how many arrangements of BANANA are the two N's not together?", "options": ["20", "60", "40", "36"], "answer": 2, "expl": "Total 6!/(3!2!) = 60. N's together: 5!/3! = 20. 60 − 20 = 40."}, {"n": 16, "id": "D1H-16", "section": "Quant", "topic": "Permutations and Combinations", "text": "6 boys and 4 girls stand in a row so that no two girls are together. How many arrangements are possible?", "options": ["151200", "604800", "86400", "302400"], "answer": 1, "expl": "Arrange boys: 6! = 720. Choose 4 of 7 gaps in order: 7×6×5×4 = 840. 720 × 840 = 604800."}, {"n": 17, "id": "D1H-17", "section": "Quant", "topic": "Mixtures and Alligations", "text": "60 litres of a mixture has milk and water in the ratio 2 : 1. How much water must be added to make the ratio 1 : 1?", "options": ["15 litres", "10 litres", "20 litres", "30 litres"], "answer": 2, "expl": "Milk 40, water 20. Water must become 40, so add 20."}, {"n": 18, "id": "D1H-18", "section": "Quant", "topic": "Logarithms", "text": "Given log 2 = 0.3010, how many digits does 2^50 have?", "options": ["50", "16", "15", "17"], "answer": 1, "expl": "50 × 0.3010 = 15.05, so 15 + 1 = 16 digits."}, {"n": 19, "id": "D1H-19", "section": "Quant", "topic": "Probability", "text": "Two cards are drawn from a pack of 52 without replacement. What is the probability that both are kings or both are queens?", "options": ["2/169", "2/221", "1/221", "1/169"], "answer": 1, "expl": "2 × C(4,2)/C(52,2) = 12/1326 = 2/221."}, {"n": 20, "id": "D1H-20", "section": "Quant", "topic": "Probability", "text": "An urn has 4 red and 3 green balls. Three are drawn one by one without replacement. What is the probability that the colours alternate?", "options": ["3/7", "1/7", "2/7", "12/35"], "answer": 2, "expl": "RGR = 36/210, GRG = 24/210. Total 60/210 = 2/7."}, {"n": 21, "id": "D1H-21", "section": "Logical", "topic": "Series Completion", "text": "1, 2, 6, 15, 31, ?", "options": ["57", "56", "54", "52", "None of these"], "answer": 1, "expl": "Differences are squares: 1, 4, 9, 16, 25."}, {"n": 22, "id": "D1H-22", "section": "Logical", "topic": "Series Completion", "text": "3, 4, 12, 39, 103, ?", "options": ["230", "224", "216", "228", "None of these"], "answer": 3, "expl": "Differences are cubes: 1, 8, 27, 64, 125."}, {"n": 23, "id": "D1H-23", "section": "Logical", "topic": "Series Completion", "text": "2, 3, 10, 15, 26, 35, ?", "options": ["49", "48", "51", "50", "None of these"], "answer": 3, "expl": "n² + 1 and n² − 1 alternate."}, {"n": 24, "id": "D1H-24", "section": "Logical", "topic": "Series Completion", "text": "2, 3, 8, 27, 112, ?", "options": ["560", "561", "570", "565", "None of these"], "answer": 3, "expl": "× 1 + 1, × 2 + 2, × 3 + 3, × 4 + 4, × 5 + 5."}, {"n": 25, "id": "D1H-25", "section": "Logical", "topic": "Series Completion", "text": "6, 12, 21, 33, 48, ?", "options": ["65", "63", "68", "64", "None of these"], "answer": 4, "expl": "Differences 6, 9, 12, 15, 18 give 66, which is not listed."}, {"n": 26, "id": "D1H-26", "section": "Logical", "topic": "Data Sufficiency", "text": "Is x > y?\n(I) x² > y²\n(II) x − y > 0", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "II alone answers yes. I fails for x = −3, y = 1."}, {"n": 27, "id": "D1H-27", "section": "Logical", "topic": "Data Sufficiency", "text": "What is x + y?\n(I) 2x + 3y = 12\n(II) 4x + 6y = 24", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 2, "expl": "II is I doubled, so there is only one equation in two unknowns."}, {"n": 28, "id": "D1H-28", "section": "Logical", "topic": "Data Sufficiency", "text": "Is the positive integer n divisible by 6?\n(I) n is divisible by 12.\n(II) n is divisible by 3.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "I alone answers yes. II fails for n = 3."}, {"n": 29, "id": "D1H-29", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the ratio of A's salary to B's?\n(I) A earns 25% more than B.\n(II) B earns 20% less than A.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 3, "expl": "Both give A : B = 5 : 4."}, {"n": 30, "id": "D1H-30", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the two-digit number?\n(I) The sum of its digits is 9.\n(II) Reversing the digits makes it 27 larger.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 1, "expl": "II gives b − a = 3. With I: a = 3, b = 6, so 36."}]}, {"code": "D2R", "day": "Day 2", "level": "Regular", "minutes": 30, "questions": [{"n": 1, "id": "D2R-01", "section": "Verbal", "topic": "Sentence Correction", "text": "In which sentence is the word \"principle\" used incorrectly?", "options": ["The principle of the school addressed the parents.", "The basic principle of the machine is simple.", "He refused to cheat on principle.", "She is a woman of principle."], "answer": 0, "expl": "The head of a school is the \"principal\"."}, {"n": 2, "id": "D2R-02", "section": "Verbal", "topic": "Sentence Correction", "text": "The number of applicants ___ increased this year.", "options": ["have", "has", "are", "were"], "answer": 1, "expl": "\"The number of\" is singular. \"A number of\" is plural."}, {"n": 3, "id": "D2R-03", "section": "Verbal", "topic": "Sentence Correction", "text": "I look forward to ___ you.", "options": ["meeting", "meet", "have met", "met"], "answer": 0, "expl": "\"Look forward to\" is followed by a gerund."}, {"n": 4, "id": "D2R-04", "section": "Verbal", "topic": "Sentence Correction", "text": "She is good ___ mathematics.", "options": ["in", "on", "with", "at"], "answer": 3, "expl": "Good at a subject or skill."}, {"n": 5, "id": "D2R-05", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the correct sentence.", "options": ["Neither the teacher nor the students was ready.", "Neither of the teacher nor the students was ready.", "Neither the teacher or the students were ready.", "Neither the teacher nor the students were ready."], "answer": 3, "expl": "\"Neither ... nor\"; the verb agrees with the nearer subject, \"students\"."}, {"n": 6, "id": "D2R-06", "section": "Verbal", "topic": "Article Usage", "text": "It was ___ unique opportunity.", "options": ["no article", "the", "a", "an"], "answer": 2, "expl": "\"Unique\" starts with a \"y\" sound."}, {"n": 7, "id": "D2R-07", "section": "Verbal", "topic": "Article Usage", "text": "___ sun rises in ___ east.", "options": ["A, the", "The, no article", "The, the", "No article, the"], "answer": 2, "expl": "Unique objects and directions take \"the\"."}, {"n": 8, "id": "D2R-08", "section": "Verbal", "topic": "Article Usage", "text": "He is ___ one-eyed man.", "options": ["a", "no article", "the", "an"], "answer": 0, "expl": "\"One\" starts with a \"w\" sound."}, {"n": 9, "id": "D2R-09", "section": "Verbal", "topic": "Article Usage", "text": "She went to ___ hospital to visit her friend.", "options": ["no article", "an", "a", "the"], "answer": 3, "expl": "She is a visitor, not a patient, so the specific building takes \"the\"."}, {"n": 10, "id": "D2R-10", "section": "Verbal", "topic": "Article Usage", "text": "Which noun cannot be preceded by \"a\"?", "options": ["luggage", "trolley", "suitcase", "bag"], "answer": 0, "expl": "Luggage is uncountable."}, {"n": 11, "id": "D2R-11", "section": "Quant", "topic": "Speed Time Distance", "text": "A man goes to a town at 30 km/h and returns at 20 km/h. The whole trip takes 10 hours. How far is the town?", "options": ["120 km", "150 km", "100 km", "125 km"], "answer": 0, "expl": "d/30 + d/20 = 10, so d/12 = 10 and d = 120."}, {"n": 12, "id": "D2R-12", "section": "Quant", "topic": "Speed Time Distance", "text": "A 200 m train crosses a 300 m platform in 25 seconds. What is its speed?", "options": ["60 km/h", "80 km/h", "54 km/h", "72 km/h"], "answer": 3, "expl": "500/25 = 20 m/s = 72 km/h."}, {"n": 13, "id": "D2R-13", "section": "Quant", "topic": "Sequence and Series", "text": "How many terms are in the AP 7, 11, 15, ..., 199?", "options": ["48", "47", "50", "49"], "answer": 3, "expl": "(199 − 7)/4 + 1 = 49."}, {"n": 14, "id": "D2R-14", "section": "Quant", "topic": "Sequence and Series", "text": "What is the 5th term of the GP 3, 6, 12, ...?", "options": ["24", "96", "36", "48"], "answer": 3, "expl": "3 × 2⁴ = 48."}, {"n": 15, "id": "D2R-15", "section": "Quant", "topic": "Permutations and Combinations", "text": "In how many ways can the letters of APPLE be arranged?", "options": ["30", "60", "120", "24"], "answer": 1, "expl": "5!/2! = 60."}, {"n": 16, "id": "D2R-16", "section": "Quant", "topic": "Permutations and Combinations", "text": "12 people shake hands once with each other. How many handshakes are there?", "options": ["72", "132", "66", "60"], "answer": 2, "expl": "C(12,2) = 66."}, {"n": 17, "id": "D2R-17", "section": "Quant", "topic": "Mixtures and Alligations", "text": "In what ratio must water be mixed with milk costing ₹60 per litre to get a mixture worth ₹50 per litre?", "options": ["1 : 6", "1 : 5", "1 : 4", "5 : 1"], "answer": 1, "expl": "Water costs 0. (60 − 50) : (50 − 0) = 10 : 50 = 1 : 5 (water : milk)."}, {"n": 18, "id": "D2R-18", "section": "Quant", "topic": "Logarithms", "text": "What is log 1000 + log 0.01 (base 10)?", "options": ["10", "5", "−1", "1"], "answer": 3, "expl": "3 + (−2) = 1."}, {"n": 19, "id": "D2R-19", "section": "Quant", "topic": "Probability", "text": "A card is drawn from a pack of 52. What is the probability that it is a heart or a king?", "options": ["5/13", "17/52", "4/13", "1/4"], "answer": 2, "expl": "13 hearts + 3 other kings = 16. 16/52 = 4/13."}, {"n": 20, "id": "D2R-20", "section": "Quant", "topic": "Probability", "text": "Three coins are tossed. What is the probability of exactly two heads?", "options": ["1/2", "1/4", "3/8", "5/8"], "answer": 2, "expl": "HHT, HTH, THH: 3 of 8."}, {"n": 21, "id": "D2R-21", "section": "Logical", "topic": "Series Completion", "text": "1, 8, 27, 64, ?", "options": ["100", "125", "121", "216", "None of these"], "answer": 1, "expl": "Cubes of 1 to 5."}, {"n": 22, "id": "D2R-22", "section": "Logical", "topic": "Series Completion", "text": "3, 6, 18, 72, 360, ?", "options": ["2520", "1800", "1440", "2160", "None of these"], "answer": 3, "expl": "× 2, × 3, × 4, × 5, × 6."}, {"n": 23, "id": "D2R-23", "section": "Logical", "topic": "Series Completion", "text": "120, 99, 80, 63, 48, ?", "options": ["34", "36", "35", "33", "None of these"], "answer": 2, "expl": "n² − 1 for n = 11, 10, 9, 8, 7, 6."}, {"n": 24, "id": "D2R-24", "section": "Logical", "topic": "Series Completion", "text": "2, 4, 12, 48, 240, ?", "options": ["1340", "1400", "1200", "1500", "None of these"], "answer": 4, "expl": "× 2, × 3, × 4, × 5, × 6 gives 1440, which is not listed."}, {"n": 25, "id": "D2R-25", "section": "Logical", "topic": "Series Completion", "text": "10, 14, 22, 38, 70, ?", "options": ["102", "140", "130", "134", "None of these"], "answer": 3, "expl": "Differences double: 4, 8, 16, 32, 64."}, {"n": 26, "id": "D2R-26", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the cost of one pen?\n(I) 5 pens and 3 pencils cost ₹40.\n(II) One pencil costs ₹5.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 1, "expl": "Together: 5p + 15 = 40, so p = ₹5."}, {"n": 27, "id": "D2R-27", "section": "Logical", "topic": "Data Sufficiency", "text": "Is today Wednesday?\n(I) The day after tomorrow is Friday.\n(II) Yesterday was Tuesday.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 3, "expl": "Either one alone gives Wednesday."}, {"n": 28, "id": "D2R-28", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the value of y?\n(I) y³ = −64\n(II) y² = 16", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "I gives y = −4. II gives 4 or −4."}, {"n": 29, "id": "D2R-29", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the profit percentage?\n(I) The selling price is 125% of the cost price.\n(II) The profit is ₹100.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "I alone gives 25%. II has no cost price."}, {"n": 30, "id": "D2R-30", "section": "Logical", "topic": "Data Sufficiency", "text": "How old is Priya?\n(I) Priya is twice as old as Neha.\n(II) Neha is 3 years younger than Ravi.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 2, "expl": "Ravi's age is unknown, so even both are not enough."}]}, {"code": "D2H", "day": "Day 2", "level": "Hard", "minutes": 30, "questions": [{"n": 1, "id": "D2H-01", "section": "Verbal", "topic": "Sentence Correction", "text": "In which sentence is the word \"disinterested\" used incorrectly?", "options": ["As a disinterested observer, she gave a fair account.", "The students looked disinterested and kept yawning during the lecture.", "A judge must be disinterested in the outcome of a case.", "We need a disinterested third party to settle the dispute."], "answer": 1, "expl": "\"Disinterested\" means impartial. Bored students are \"uninterested\"."}, {"n": 2, "id": "D2H-02", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the best version of the underlined part: The quality of these apples [are not good].", "options": ["is not good", "are not good", "have not been good", "were not good"], "answer": 0, "expl": "The subject is \"quality\", which is singular."}, {"n": 3, "id": "D2H-03", "section": "Verbal", "topic": "Sentence Correction", "text": "He is one of those men who ___ always ready to help.", "options": ["is", "has been", "are", "was"], "answer": 2, "expl": "\"Who\" refers to \"men\", which is plural."}, {"n": 4, "id": "D2H-04", "section": "Verbal", "topic": "Sentence Correction", "text": "Choose the best version: [Walking down the road, the trees looked beautiful.]", "options": ["While walking down the road, the trees looked beautiful.", "Walking down the road, I found the trees beautiful.", "Walking down the road, the trees looked beautiful.", "The trees, walking down the road, looked beautiful."], "answer": 1, "expl": "The trees were not walking. The phrase must attach to the person walking."}, {"n": 5, "id": "D2H-05", "section": "Verbal", "topic": "Sentence Correction", "text": "Had I known about the traffic, I ___ earlier.", "options": ["will leave", "would have left", "would leave", "had left"], "answer": 1, "expl": "Past unreal condition: had + past participle, then would have + past participle."}, {"n": 6, "id": "D2H-06", "section": "Verbal", "topic": "Article Usage", "text": "___ rich should help ___ poor.", "options": ["A, a", "The, the", "No article, the", "The, no article"], "answer": 1, "expl": "\"The\" + adjective refers to a whole group of people."}, {"n": 7, "id": "D2H-07", "section": "Verbal", "topic": "Article Usage", "text": "Choose the correct sentence.", "options": ["He is an university professor.", "He is a university professor.", "He is the university professor of a city.", "He is university professor."], "answer": 1, "expl": "\"University\" starts with a \"y\" sound, so it takes \"a\"."}, {"n": 8, "id": "D2H-08", "section": "Verbal", "topic": "Article Usage", "text": "Which group of words can ALL be preceded by \"a\"?", "options": ["umbrella, unicorn, union", "hour, union, unit", "unicorn, union, useful tool", "apple, uniform, unit"], "answer": 2, "expl": "Umbrella, hour and apple start with vowel sounds."}, {"n": 9, "id": "D2H-09", "section": "Verbal", "topic": "Article Usage", "text": "___ Ramayana was written by Valmiki.", "options": ["An", "A", "The", "No article"], "answer": 2, "expl": "Names of holy books take \"the\"."}, {"n": 10, "id": "D2H-10", "section": "Verbal", "topic": "Article Usage", "text": "Find the part with the error: My friend is / a engineer / at the / space agency.", "options": ["at the", "My friend is", "space agency", "a engineer"], "answer": 3, "expl": "\"Engineer\" starts with a vowel sound, so it takes \"an\"."}, {"n": 11, "id": "D2H-11", "section": "Quant", "topic": "Speed Time Distance", "text": "Trains of 150 m and 250 m run in the same direction at 72 km/h and 54 km/h. How long does the faster train take to pass the slower one?", "options": ["100 s", "60 s", "80 s", "40 s"], "answer": 2, "expl": "Relative speed 18 km/h = 5 m/s. Distance 400 m. 400/5 = 80 s."}, {"n": 12, "id": "D2H-12", "section": "Quant", "topic": "Speed Time Distance", "text": "A car covers the first third of a distance at 20 km/h, the next third at 30 km/h and the last third at 60 km/h. What is the average speed?", "options": ["36.7 km/h", "30 km/h", "33.3 km/h", "40 km/h"], "answer": 1, "expl": "3 / (1/20 + 1/30 + 1/60) = 3 / (6/60) = 30."}, {"n": 13, "id": "D2H-13", "section": "Quant", "topic": "Sequence and Series", "text": "What is the sum of all two-digit numbers divisible by 7?", "options": ["728", "770", "686", "735"], "answer": 0, "expl": "14 to 98: 13 terms. 13 × (14 + 98)/2 = 728."}, {"n": 14, "id": "D2H-14", "section": "Quant", "topic": "Sequence and Series", "text": "An infinite GP has first term 5 and sum 20. What is the common ratio?", "options": ["3/4", "1/2", "2/3", "1/4"], "answer": 0, "expl": "5/(1 − r) = 20, so r = 3/4."}, {"n": 15, "id": "D2H-15", "section": "Quant", "topic": "Permutations and Combinations", "text": "In how many ways can 5 men and 5 women sit around a round table so that men and women alternate?", "options": ["1440", "2880", "14400", "28800"], "answer": 1, "expl": "Men around the table: 4! = 24. Women in the 5 gaps: 5! = 120. 24 × 120 = 2880."}, {"n": 16, "id": "D2H-16", "section": "Quant", "topic": "Permutations and Combinations", "text": "How many 4-digit even numbers can be formed from the digits 0–9 with no digit repeated?", "options": ["1792", "2520", "2296", "2240"], "answer": 2, "expl": "Ending in 0: 9 × 8 × 7 = 504. Ending in 2, 4, 6 or 8: 4 × 8 × 8 × 7 = 1792. Total 2296."}, {"n": 17, "id": "D2H-17", "section": "Quant", "topic": "Mixtures and Alligations", "text": "From 80 litres of pure milk, 8 litres are removed and replaced with water. This is done 3 times in all. How much milk is left?", "options": ["56 litres", "59.04 litres", "57.6 litres", "58.32 litres"], "answer": 3, "expl": "80 × (1 − 8/80)³ = 80 × 0.729 = 58.32."}, {"n": 18, "id": "D2H-18", "section": "Quant", "topic": "Logarithms", "text": "Given log 2 = 0.3010 and log 3 = 0.4771, find log 72.", "options": ["1.9031", "1.8572", "1.8062", "1.7781"], "answer": 1, "expl": "72 = 2³ × 3². 3(0.3010) + 2(0.4771) = 1.8572."}, {"n": 19, "id": "D2H-19", "section": "Quant", "topic": "Probability", "text": "What is the probability that a leap year has 53 Sundays?", "options": ["1/7", "53/366", "2/7", "3/7"], "answer": 2, "expl": "366 days = 52 weeks + 2 days. Of the 7 possible pairs of extra days, 2 include a Sunday."}, {"n": 20, "id": "D2H-20", "section": "Quant", "topic": "Probability", "text": "An urn has 3 white and 2 black balls. All 5 are drawn one by one without replacement. What is the probability that the colours alternate?", "options": ["1/5", "1/20", "1/10", "3/10"], "answer": 2, "expl": "It must go W B W B W: 3/5 × 2/4 × 2/3 × 1/2 × 1 = 1/10."}, {"n": 21, "id": "D2H-21", "section": "Logical", "topic": "Series Completion", "text": "0, 6, 24, 60, 120, ?", "options": ["210", "200", "216", "180", "None of these"], "answer": 0, "expl": "n³ − n for n = 1 to 6."}, {"n": 22, "id": "D2H-22", "section": "Logical", "topic": "Series Completion", "text": "2, 12, 36, 80, 150, ?", "options": ["216", "240", "256", "252", "None of these"], "answer": 3, "expl": "n³ + n² for n = 1 to 6."}, {"n": 23, "id": "D2H-23", "section": "Logical", "topic": "Series Completion", "text": "4, 6, 12, 30, 90, ?", "options": ["300", "315", "270", "360", "None of these"], "answer": 1, "expl": "× 1.5, × 2, × 2.5, × 3, × 3.5."}, {"n": 24, "id": "D2H-24", "section": "Logical", "topic": "Series Completion", "text": "3, 8, 6, 15, 12, 24, 24, ?", "options": ["32", "36", "33", "35", "None of these"], "answer": 3, "expl": "Two series: 3, 6, 12, 24 (× 2) and 8, 15, 24, 35 (differences 7, 9, 11)."}, {"n": 25, "id": "D2H-25", "section": "Logical", "topic": "Series Completion", "text": "7, 26, 63, 124, 215, ?", "options": ["336", "316", "296", "343", "None of these"], "answer": 4, "expl": "n³ − 1 for n = 2 to 7 gives 342, which is not listed."}, {"n": 26, "id": "D2H-26", "section": "Logical", "topic": "Data Sufficiency", "text": "Is x² > x?\n(I) x > 1\n(II) x < 0", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 3, "expl": "Both ranges make x² > x."}, {"n": 27, "id": "D2H-27", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the remainder when n is divided by 6?\n(I) n leaves remainder 2 when divided by 3.\n(II) n is odd.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 1, "expl": "I allows remainder 2 or 5. Adding odd leaves only 5."}, {"n": 28, "id": "D2H-28", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the average age of a group of 5 people?\n(I) Their total age is 120 years.\n(II) The oldest is 40 and the youngest is 15.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "I alone gives 24."}, {"n": 29, "id": "D2H-29", "section": "Logical", "topic": "Data Sufficiency", "text": "Is the positive integer x prime?\n(I) x is even.\n(II) 1 < x < 4", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 0, "expl": "II gives 2 or 3, both prime. I allows 2 or 4."}, {"n": 30, "id": "D2H-30", "section": "Logical", "topic": "Data Sufficiency", "text": "What is the speed of the boat in still water?\n(I) It goes 24 km downstream in 2 hours.\n(II) It goes 24 km upstream in 4 hours.", "options": ["Only one of the statements alone is enough", "Both statements together are needed, but neither alone", "Cannot be answered even with both statements", "Each statement alone is enough"], "answer": 1, "expl": "Down 12, up 6. Boat = (12 + 6)/2 = 9 km/h."}]}];
+const L = "ABCDE";
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = s => String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0");
+const ls = {get(k,d){try{return JSON.parse(localStorage.getItem(k)) ?? d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
-  function parseCSV(text) {
-    var rows = [], row = [], f = "", q = false, i, c;
-    text = text.replace(/^﻿/, "");
-    for (i = 0; i < text.length; i++) {
-      c = text[i];
-      if (q) {
-        if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; }
-        else f += c;
-      } else if (c === '"') q = true;
-      else if (c === ",") { row.push(f); f = ""; }
-      else if (c === "\n" || c === "\r") {
-        if (c === "\r" && text[i + 1] === "\n") i++;
-        row.push(f); f = ""; rows.push(row); row = [];
-      } else f += c;
-    }
-    if (f !== "" || row.length) { row.push(f); rows.push(row); }
-    rows = rows.filter(function (r) { return r.some(function (x) { return x.trim() !== ""; }); });
-    if (!rows.length) return [];
-    var h = rows[0].map(function (x) { return x.trim(); });
-    return rows.slice(1).map(function (r) { var o = {}; h.forEach(function (k, j) { o[k] = (r[j] || "").trim(); }); return o; });
-  }
-  function load(name) {
-    return fetch(D + name + "?v=" + Date.now()).then(function (r) {
-      if (!r.ok) throw new Error(name + " (" + r.status + ")");
-      return r.text();
-    }).then(parseCSV);
-  }
+let db = null, me = null, attempts = [], dl = null;
+let st = null; // running exam state
 
-  /* ---------- tabs ---------- */
-  function showTab(t) {
-    if (!$(t)) t = "apt";
-    document.querySelectorAll(".pane").forEach(function (p) { p.classList.toggle("hide", p.id !== t); });
-    document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.tab === t); });
-    store("pp_tab", t);
-  }
-  $("tabs").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
+function sections(ex){ const m={}; ex.questions.forEach(q=>(m[q.section]=m[q.section]||[]).push(q)); return m; }
 
-  /* ---------- aptitude ---------- */
-  var aptState = null, timerId = null;
-  function days(list) { var s = {}; list.forEach(function (r) { s[r.day] = 1; }); return Object.keys(s).sort(function (a, b) { return a - b; }); }
-  function fmt(s) { var m = Math.floor(s / 60), x = s % 60; return m + ":" + (x < 10 ? "0" : "") + x; }
+/* ---------- home ---------- */
+function home(){
+  stopClock();
+  const name = ls.get("mock_name","");
+  const best = {}; attempts.forEach(a=>{ if(!best[a.exam] || a.score>best[a.exam].score) best[a.exam]=a; });
+  $("#app").innerHTML = `
+  <header style="display:grid;gap:6px">
+    <div class="meta">Naukri Campus pattern · 30 questions · 30 minutes · pilot</div>
+    <h1>Aptitude Mock Tests</h1>
+    <p class="note">Same sections as the Naukri Campus test: sentence correction and articles, quant (speed, series, P&amp;C, mixtures, logs, probability), series completion and data sufficiency. Answers stay hidden until you submit. Every attempt is saved.</p>
+  </header>
+  <div class="row"><label class="lbl" for="nm">Your name</label><input id="nm" value="${esc(name)}" placeholder="Yashas" autocomplete="name"></div>
+  <div class="cards">${EXAMS.map(ex=>{const b=best[ex.code];const s=sections(ex);return `
+    <div class="card">
+      <div class="lbl">${ex.day}</div>
+      <div class="lvl ${ex.level==="Hard"?"hard":""}">${ex.level}</div>
+      <div class="blueprint">${Object.entries(s).map(([k,v])=>`${k} ${v.length}`).join(" · ")}<br>${ex.minutes} minutes</div>
+      ${b?`<div class="done">Best: ${b.score}/${b.total} in ${fmt(b.secs)}</div>`:""}
+      <button class="btn" data-start="${ex.code}">Start ${ex.day} ${ex.level}</button>
+    </div>`}).join("")}</div>
+  <section style="display:grid;gap:10px">
+    <div class="row" style="justify-content:space-between"><h2>Attempts</h2>
+      <button class="btn ghost" id="xl" ${attempts.length?"":"disabled"}>Download results (.xlsx)</button></div>
+    <div class="msg" id="store"></div>
+    <div class="tablewrap"><table><thead><tr><th>When</th><th>Name</th><th>Test</th><th>Score</th><th>Verbal</th><th>Quant</th><th>Logical</th><th>Time</th></tr></thead>
+    <tbody>${attempts.length?attempts.map(a=>`<tr><td class="n">${esc(new Date(a.submittedAt).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}))}</td><td>${esc(a.name||"—")}</td><td>${esc(a.day)} ${esc(a.level)}</td><td class="n"><b>${a.score}/${a.total}</b></td><td class="n">${a.verbal}</td><td class="n">${a.quant}</td><td class="n">${a.logical}</td><td class="n">${fmt(a.secs)}</td></tr>`).join(""):`<tr><td colspan="8" class="msg">No attempts yet. Your first submitted test appears here.</td></tr>`}</tbody></table></div>
+  </section>
+  <section class="ask">
+    <h2>Yashas, after Day 1 please tell us</h2>
+    <ol><li>Is this close to the real Naukri test in style and difficulty?</li><li>Is Regular too easy or Hard too hard? Which sections?</li><li>Should the next tests be the full 60 questions in 60 minutes?</li></ol>
+  </section>`;
+  $("#store").textContent = db ? "Results are saved to this page's shared record." : "Results are saved in this browser only. Sign in to claude.ai to save them to the shared record.";
+  $("#nm").oninput = e => ls.set("mock_name", e.target.value.trim());
+  document.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>start(b.dataset.start));
+  const x = $("#xl"); if(x) x.onclick = downloadXlsx;
+}
 
-  function renderAptHome() {
-    clearInterval(timerId);
-    aptState = null;
-    var ds = days(apt), hist = store("pp_apt_hist") || [];
-    var h = '<div class="row2"><label for="aday" style="margin:0">Day</label><select id="aday">' +
-      ds.map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("") +
-      '</select><button id="astart" class="orangebtn">Start timed set</button></div>';
-    if (hist.length) {
-      h += "<h3>History</h3>" + hist.slice().reverse().slice(0, 10).map(function (x) {
-        return '<div class="logitem">Day ' + esc(x.day) + " · <b>" + x.score + "/" + x.total + "</b> · " + fmt(x.secs) + " · " + esc(x.when) +
-          (x.wrong && x.wrong.length ? '<div class="meta">Wrong: ' + esc(x.wrong.join(", ")) + "</div>" : "") + "</div>";
-      }).join("");
-    }
-    $("apt").innerHTML = h;
-    $("astart").onclick = function () { startApt($("aday").value); };
-  }
-  function startApt(day) {
-    aptState = { qs: apt.filter(function (r) { return r.day === day; }), i: 0, score: 0, wrong: [], day: day, t0: Date.now(), locked: false };
-    timerId = setInterval(function () { var e = $("atimer"); if (e) e.textContent = "⏱ " + fmt(Math.round((Date.now() - aptState.t0) / 1000)); }, 500);
-    renderQ();
-  }
-  function renderQ() {
-    var s = aptState, q = s.qs[s.i];
-    var h = '<div class="row2"><span class="timer" id="atimer">⏱ 0:00</span><span class="meta">Q ' + (s.i + 1) + "/" + s.qs.length + " · " + esc(q.id) + " · " + esc(q.topic) + " · " + esc(q.difficulty) + " · target " + esc(q.target_sec) + 's</span></div>';
-    h += '<div class="qtxt">' + esc(q.question) + "</div>";
-    ["a", "b", "c", "d"].forEach(function (k) {
-      if (q["option_" + k]) h += '<button class="opt" data-k="' + k + '"><span class="b">' + k.toUpperCase() + "</span><span>" + esc(q["option_" + k]) + "</span></button>";
-    });
-    h += '<div id="aexp"></div><div class="row2"><button id="anext" class="hide">' + (s.i + 1 < s.qs.length ? "Next" : "Finish") + "</button></div>";
-    $("apt").innerHTML = h;
-    s.locked = false;
-    $("apt").querySelectorAll(".opt").forEach(function (b) { b.onclick = function () { answer(b.dataset.k); }; });
-    $("anext").onclick = function () { s.i++; if (s.i < s.qs.length) renderQ(); else finishApt(); };
-  }
-  function answer(k) {
-    var s = aptState; if (s.locked) return; s.locked = true;
-    var q = s.qs[s.i], right = q.answer.toLowerCase().trim();
-    if (k === right) s.score++; else s.wrong.push(q.id);
-    $("apt").querySelectorAll(".opt").forEach(function (b) {
-      b.disabled = true;
-      if (b.dataset.k === right) b.classList.add("good");
-      else if (b.dataset.k === k) b.classList.add("bad");
-    });
-    $("aexp").innerHTML = '<div class="expl"><b>' + (k === right ? "Correct" : "Answer: " + right.toUpperCase()) + ".</b> " + esc(q.explanation) + "</div>";
-    $("anext").classList.remove("hide");
-  }
-  function finishApt() {
-    clearInterval(timerId);
-    var s = aptState, secs = Math.round((Date.now() - s.t0) / 1000);
-    var hist = store("pp_apt_hist") || [];
-    hist.push({ day: s.day, score: s.score, total: s.qs.length, secs: secs, wrong: s.wrong, when: new Date().toLocaleDateString() });
-    store("pp_apt_hist", hist);
-    $("apt").innerHTML = '<h2>Day ' + esc(s.day) + ": " + s.score + "/" + s.qs.length + "</h2><p>Time " + fmt(secs) + "</p>" +
-      (s.wrong.length ? "<p>Wrong: " + esc(s.wrong.join(", ")) + " — add them to the Error log.</p>" : "<p>Perfect! 🎉</p>") +
-      '<button id="aback">Back</button>';
-    $("aback").onclick = renderAptHome;
-  }
+/* ---------- exam ---------- */
+let tick = null;
+function stopClock(){ clearInterval(tick); tick = null; }
+function start(code){
+  const ex = EXAMS.find(e=>e.code===code);
+  st = {ex, i:0, ans:{}, flag:{}, left:ex.minutes*60, startedAt:new Date().toISOString(), name:ls.get("mock_name","")};
+  stopClock();
+  tick = setInterval(()=>{ st.left--; const c=$("#clock"); if(c){c.textContent=fmt(Math.max(st.left,0)); c.classList.toggle("low",st.left<=300);} if(st.left<=0) submit(true); },1000);
+  examView();
+}
+function examView(){
+  const {ex,i} = st, q = ex.questions[i];
+  const answered = Object.keys(st.ans).length;
+  let pal = "", last = "";
+  ex.questions.forEach((x,k)=>{ if(x.section!==last){ last=x.section; pal+=`<div class="sec">${x.section}</div>`; }
+    pal += `<button class="${st.ans[x.id]!=null?"ans":""} ${st.flag[x.id]?"flag":""} ${k===i?"cur":""}" data-go="${k}" aria-label="Question ${x.n}">${x.n}</button>`; });
+  $("#app").innerHTML = `
+  <div class="row" style="justify-content:space-between"><div class="meta">${ex.day} · ${ex.level}</div><button class="btn quiet" id="quit">Leave test</button></div>
+  <div class="exam">
+    <aside class="side">
+      <div><div class="lbl">Time left</div><div class="clock ${st.left<=300?"low":""}" id="clock">${fmt(st.left)}</div></div>
+      <div class="lbl">${answered}/${ex.questions.length} answered</div>
+      <div class="pal">${pal}</div>
+      <div class="legend"><span>Filled: answered</span><span>Amber line: marked for review</span></div>
+      <button class="btn" id="sub">Submit test</button>
+    </aside>
+    <article class="sheet">
+      <div class="qhead"><span class="num">${q.n}.</span><span class="tag">${esc(q.section)}</span><span class="tag">${esc(q.topic)}</span></div>
+      <p class="qtext">${esc(q.text)}</p>
+      <div class="opts">${q.options.map((o,k)=>`<button class="opt ${st.ans[q.id]===k?"picked":""}" data-pick="${k}"><span class="bub">${L[k]}</span><span>${esc(o)}</span></button>`).join("")}</div>
+      <div class="nav">
+        <div class="row"><button class="btn quiet" id="clr">Clear</button><button class="btn quiet" id="flg">${st.flag[q.id]?"Unmark review":"Mark for review"}</button></div>
+        <div class="row"><button class="btn ghost" id="prev" ${i===0?"disabled":""}>Previous</button><button class="btn" id="next">${i===ex.questions.length-1?"Review and submit":"Save and next"}</button></div>
+      </div>
+      <div class="msg" id="confirm" aria-live="polite"></div>
+    </article>
+  </div>`;
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{st.i=+b.dataset.go;examView()});
+  document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{st.ans[q.id]=+b.dataset.pick;examView()});
+  $("#clr").onclick=()=>{delete st.ans[q.id];examView()};
+  $("#flg").onclick=()=>{st.flag[q.id]=!st.flag[q.id];examView()};
+  $("#prev").onclick=()=>{st.i--;examView()};
+  $("#next").onclick=()=>{ if(st.i<ex.questions.length-1){st.i++;examView()} else confirmSubmit(); };
+  $("#sub").onclick=confirmSubmit;
+  $("#quit").onclick=()=>{ const c=$("#confirm"); c.innerHTML=`Leave without saving? <button class="btn quiet" id="qy">Leave</button> <button class="btn ghost" id="qn">Stay</button>`;
+    $("#qy").onclick=()=>{st=null;home()}; $("#qn").onclick=()=>c.textContent=""; };
+}
+function confirmSubmit(){
+  const un = st.ex.questions.length - Object.keys(st.ans).length;
+  const c=$("#confirm");
+  c.innerHTML = `${un?`${un} unanswered. `:""}Submit now? <button class="btn" id="sy">Submit</button> <button class="btn ghost" id="sn">Keep going</button>`;
+  $("#sy").onclick=()=>submit(false); $("#sn").onclick=()=>c.textContent="";
+}
+async function submit(timeUp){
+  if(!st || st.submitted) return; st.submitted = true; stopClock();
+  const {ex} = st, secs = ex.minutes*60 - Math.max(st.left,0);
+  const per = {Verbal:0,Quant:0,Logical:0}, answers = {};
+  let score = 0;
+  ex.questions.forEach(q=>{ const a=st.ans[q.id]; answers[q.id]= a==null?"":L[a]; if(a===q.answer){score++;per[q.section]++;} });
+  const rec = {exam:ex.code, day:ex.day, level:ex.level, name:st.name||"", score, total:ex.questions.length,
+    verbal:per.Verbal, quant:per.Quant, logical:per.Logical, secs, timeUp, startedAt:st.startedAt, submittedAt:new Date().toISOString(), answers};
+  let saved = "browser";
+  if(db){ try{ if(me) rec.userId = me; await db.collection("attempts").add(rec); saved="shared"; }catch(e){ saved="failed"; } }
+  if(saved!=="shared"){ const loc=ls.get("mock_attempts",[]); loc.push(rec); ls.set("mock_attempts",loc); if(!db) attempts=[rec,...attempts]; }
+  result(rec, saved, timeUp);
+}
 
-  /* ---------- coding ---------- */
-  function renderCod() {
-    var ds = days(cod);
-    $("cod").innerHTML = '<div class="row2"><label for="cday" style="margin:0">Day</label><select id="cday">' +
-      ds.map(function (d) { return "<option>" + esc(d) + "</option>"; }).join("") + '</select></div>' +
-      '<p class="meta">Reminder: use <code>long long</code> for big sums, and start with <code>ios::sync_with_stdio(false); cin.tie(nullptr);</code></p><div id="clist"></div>';
-    $("cday").onchange = drawCod;
-    drawCod();
-  }
-  function drawCod() {
-    var d = $("cday").value;
-    $("clist").innerHTML = cod.filter(function (r) { return r.day === d; }).map(function (r) {
-      var edges = (r.edge_cases || "").split("|").map(function (x) { return x.trim(); }).filter(Boolean);
-      return '<div class="card sun" style="margin-block:10px"><h3>' + esc(r.id) + " · " + esc(r.title) + '</h3><p class="meta">' +
-        esc(r.topic) + " · " + esc(r.difficulty) + " · target " + esc(r.target_min) + " min</p><p style=\"white-space:pre-wrap\">" + esc(r.problem) + "</p>" +
-        '<dl class="kv"><dt>Input</dt><dd>' + esc(r.input_format) + "</dd><dt>Output</dt><dd>" + esc(r.output_format) + "</dd><dt>Limits</dt><dd>" + esc(r.constraints) + "</dd></dl>" +
-        "<b>Sample input</b><pre>" + esc((r.sample_input || "").replace(/\\n/g, "\n")) + "</pre><b>Sample output</b><pre>" + esc((r.sample_output || "").replace(/\\n/g, "\n")) + "</pre>" +
-        (edges.length ? "<details><summary>Edge cases</summary><ul>" + edges.map(function (e) { return "<li>" + esc(e) + "</li>"; }).join("") + "</ul></details>" : "") +
-        (r.trap ? "<details><summary>Trap</summary><p>" + esc(r.trap) + "</p></details>" : "") +
-        (r.hint ? "<details><summary>Hint</summary><p>" + esc(r.hint) + "</p></details>" : "") + "</div>";
-    }).join("");
-  }
+/* ---------- result + review ---------- */
+function result(rec, saved, timeUp){
+  const ex = EXAMS.find(e=>e.code===rec.exam), s = sections(ex);
+  const topic = {}; ex.questions.forEach(q=>{ const t=topic[q.topic]||(topic[q.topic]={r:0,n:0}); t.n++; if(L[q.answer]===rec.answers[q.id]) t.r++; });
+  $("#app").innerHTML = `
+  <div class="row" style="justify-content:space-between"><div class="meta">${ex.day} · ${ex.level} · submitted${timeUp?" (time up)":""}</div><button class="btn ghost" id="back">All tests</button></div>
+  <div class="score">
+    <div class="stat main"><span class="lbl">Score</span><b>${rec.score}/${rec.total}</b></div>
+    ${Object.keys(s).map(k=>`<div class="stat"><span class="lbl">${k}</span><b>${rec[k.toLowerCase()]}/${s[k].length}</b></div>`).join("")}
+    <div class="stat"><span class="lbl">Time used</span><b>${fmt(rec.secs)}</b></div>
+  </div>
+  <p class="msg">${saved==="shared"?"Saved to the shared record.":saved==="failed"?"Could not save to the shared record, so it is kept in this browser.":"Saved in this browser."}</p>
+  <div class="tablewrap"><table><thead><tr><th>Topic</th><th>Correct</th></tr></thead><tbody>
+    ${Object.entries(topic).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v.r}/${v.n}</td></tr>`).join("")}</tbody></table></div>
+  <h2>Answer review</h2>
+  <div style="display:grid;gap:12px">${ex.questions.map(q=>{ const g=rec.answers[q.id], gi=g?L.indexOf(g):-1, ok=gi===q.answer; return `
+    <article class="sheet">
+      <div class="qhead"><span class="num">${q.n}.</span><span class="tag">${esc(q.topic)}</span><span class="pill ${gi<0?"s":ok?"r":"w"}">${gi<0?"Skipped":ok?"Correct":"Wrong"}</span></div>
+      <p class="qtext">${esc(q.text)}</p>
+      <div class="opts">${q.options.map((o,k)=>`<button class="opt ${k===q.answer?"right":k===gi?"wrong":""}" disabled><span class="bub">${L[k]}</span><span>${esc(o)}</span></button>`).join("")}</div>
+      <p class="expl">${esc(q.expl)}</p>
+    </article>`}).join("")}</div>`;
+  $("#back").onclick = ()=>{ st=null; home(); };
+  window.scrollTo(0,0);
+}
 
-  /* ---------- error log ---------- */
-  var TYPES = ["Didn't know", "Careless", "Ran out of time", "Edge case missed", "Overflow", "Time limit exceeded"];
-  function renderLog() {
-    var log = store("pp_log") || [];
-    var h = '<label for="lid">Question ID</label><input type="text" id="lid" placeholder="A1-03">' +
-      '<label for="ltopic">Topic</label><input type="text" id="ltopic">' +
-      '<label for="ltype">Mistake type</label><select id="ltype">' + TYPES.map(function (t) { return "<option>" + esc(t) + "</option>"; }).join("") + "</select>" +
-      '<label for="lwhat">What went wrong</label><textarea id="lwhat"></textarea>' +
-      '<label for="lfix">Fix</label><textarea id="lfix"></textarea>' +
-      '<div class="row2"><button id="ladd" class="orangebtn">Add</button><button id="lcopy">Copy log as CSV</button><span class="meta" id="lmsg"></span></div>';
-    var counts = {};
-    log.forEach(function (x) { counts[x.type] = (counts[x.type] || 0) + 1; });
-    if (log.length) h += "<h3>Summary</h3><p>" + Object.keys(counts).map(function (k) { return '<span class="pill">' + esc(k) + ": " + counts[k] + "</span>"; }).join(" ") + "</p>";
-    h += log.map(function (x, i) {
-      return '<div class="logitem"><b>' + esc(x.id) + "</b> · " + esc(x.topic) + ' · <span class="pill">' + esc(x.type) + "</span><br>" + esc(x.what) +
-        (x.fix ? "<br><i>Fix:</i> " + esc(x.fix) : "") + ' <button data-del="' + i + '">Delete</button></div>';
-    }).join("");
-    $("log").innerHTML = h;
-    $("ladd").onclick = function () {
-      var e = { id: $("lid").value.trim(), topic: $("ltopic").value.trim(), type: $("ltype").value, what: $("lwhat").value.trim(), fix: $("lfix").value.trim(), when: new Date().toISOString().slice(0, 10) };
-      if (!e.id && !e.what) { $("lmsg").textContent = "Add an ID or what went wrong."; return; }
-      log.push(e); store("pp_log", log); renderLog();
-    };
-    $("lcopy").onclick = function () {
-      var q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
-      var csv = "date,id,topic,type,what,fix\n" + log.map(function (x) { return [x.when, x.id, x.topic, x.type, x.what, x.fix].map(q).join(","); }).join("\n");
-      var done = function (ok) { $("lmsg").textContent = ok ? "Copied!" : "Could not copy — select the text manually."; if (!ok) window.prompt && 0; };
-      try { navigator.clipboard.writeText(csv).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
-    };
-    $("log").querySelectorAll("[data-del]").forEach(function (b) {
-      b.onclick = function () { log.splice(+b.dataset.del, 1); store("pp_log", log); renderLog(); };
-    });
-  }
+/* ---------- excel ---------- */
+async function downloadXlsx(){
+  const msg = $("#store");
+  if(typeof XLSX==="undefined"){ msg.textContent="The spreadsheet tool did not load. Reload the page and try again."; return; }
+  const rows = attempts.map(a=>({Submitted:new Date(a.submittedAt).toLocaleString("en-IN"), Name:a.name||"", Test:`${a.day} ${a.level}`, Score:a.score, Total:a.total,
+    Verbal:a.verbal, Quant:a.quant, Logical:a.logical, "Time (min)":+(a.secs/60).toFixed(1), "Time up":a.timeUp?"yes":"no"}));
+  const detail = [];
+  attempts.forEach(a=>{ const ex=EXAMS.find(e=>e.code===a.exam); if(!ex) return; ex.questions.forEach(q=>{ const g=a.answers?.[q.id]||"";
+    detail.push({Submitted:new Date(a.submittedAt).toLocaleString("en-IN"), Test:`${a.day} ${a.level}`, Q:q.n, Section:q.section, Topic:q.topic,
+      "Your answer":g, Correct:L[q.answer], Result:!g?"Skipped":g===L[q.answer]?"Correct":"Wrong"}); }); });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Attempts");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(detail), "Question detail");
+  const buf = XLSX.write(wb,{bookType:"xlsx",type:"array"});
+  if(!dl){ XLSX.writeFile(wb,"aptitude-mock-results.xlsx"); msg.textContent="Saved."; return; }
+  try{ await dl.save({filename:"aptitude-mock-results.xlsx", data:new Uint8Array(buf)}); msg.textContent="Saved."; }
+  catch(e){ msg.textContent = e && e.code==="declined" ? "Download cancelled." : "Could not save the file here."; }
+}
 
-  /* ---------- plan ---------- */
-  function renderPlan() {
-    var weeks = {};
-    plan.forEach(function (r) { (weeks[r.week] = weeks[r.week] || []).push(r); });
-    $("plan").innerHTML = Object.keys(weeks).sort(function (a, b) { return a - b; }).map(function (w) {
-      return "<h3>Week " + esc(w) + '</h3><div class="tblwrap"><table><tr><th>Day</th><th>Date</th><th>Aptitude</th><th>Coding</th><th></th></tr>' +
-        weeks[w].map(function (r) {
-          var ok = (r.questions_ready || "").toLowerCase() === "yes";
-          return "<tr><td>" + esc(r.day) + "</td><td>" + esc(r.weekday) + " " + esc(r.date) + "</td><td>" + esc(r.aptitude_focus) + "</td><td>" + esc(r.coding_focus) +
-            '</td><td><span class="pill' + (ok ? " ok" : "") + '">' + (ok ? "Ready" : "After review") + "</span></td></tr>";
-        }).join("") + "</table></div>";
-    }).join("");
-  }
-
-  /* ---------- boot ---------- */
-  renderLog();
-  Promise.all([load("aptitude_questions.csv"), load("coding_questions.csv"), load("plan.csv")]).then(function (r) {
-    apt = r[0]; cod = r[1]; plan = r[2];
-    renderAptHome(); renderCod(); renderPlan();
-  }).catch(function (e) {
-    var el = $("loaderr");
-    el.textContent = "Could not load data files: " + e.message + ". Open this page from the website, not by double-clicking the file.";
-    el.classList.remove("hide");
-  });
-  showTab(store("pp_tab") || "apt");
+/* ---------- boot ---------- */
+attempts = ls.get("mock_attempts",[]).slice().reverse();
+home();
+(async()=>{
+  const c = window.claude;
+  if(!c || !c.use) return;
+  const [d, u, w] = await Promise.all([c.use("db"), c.use("user"), c.use("downloads")]);
+  dl = w;
+  if(u && u.id){ try{ me = await u.id(); }catch(e){} }
+  if(d){ db = d;
+    db.collection("attempts").orderBy("submittedAt","desc").onSnapshot(snap=>{
+      attempts = snap.docs.map(x=>x.data());
+      if(!st) home();
+    }, ()=>{});
+  } else if(!st) home();
 })();
 </script>
-</body>
-</html>
+
+</body></html>
