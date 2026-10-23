@@ -32,7 +32,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--mark);outline-o
 .btn.ghost{background:none;color:var(--mark);border:1px solid var(--mark)}
 .btn.quiet{background:none;color:var(--muted);border:1px solid var(--rule)}
 .btn:disabled{opacity:.45;cursor:default}
-input{font:15px var(--body);color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:8px 10px}
+input,select{font:15px var(--body);color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:8px 10px}
+input[type=checkbox]{padding:0;width:18px;height:18px;accent-color:var(--mark)}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
 .card{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:16px;display:grid;gap:10px;align-content:start}
@@ -155,11 +156,11 @@ function home(){
   const best = {}; attempts.forEach(a=>{ if(!best[a.exam] || a.score>best[a.exam].score) best[a.exam]=a; });
   $("#app").innerHTML = `
   <header style="display:grid;gap:6px">
-    <div class="meta">Naukri Campus pattern · 30 questions · 50 minutes · pilot</div>
+    <div class="meta">Campus placement pattern · 30 questions · 50 minutes · pilot</div>
     <h1>Aptitude Mock Tests</h1>
-    <p class="note">Same sections as the Naukri Campus test: sentence correction and articles, quant (speed, P&amp;C, mixtures, probability), series completion and data sufficiency. Answers stay hidden until you submit. Every attempt is saved.</p>
+    <p class="note">One question from each of the 30 top placement topics: 10 quantitative aptitude, 10 logical reasoning and 10 verbal ability. Answers stay hidden until you submit. Every attempt is saved, and every wrong or skipped question goes into your error log.</p>
   </header>
-  <div class="row"><label class="lbl" for="nm">Your name</label><input id="nm" value="${esc(name)}" placeholder="Yashas" autocomplete="name"></div>
+  <div class="row"><label class="lbl" for="nm">Your name</label><input id="nm" value="${esc(name)}" placeholder="Prabhas" autocomplete="name"></div>
   <div class="cards">${EXAMS.map(ex=>{const b=best[ex.code];const s=sections(ex);return `
     <div class="card">
       <div class="lbl">${ex.day}</div>
@@ -168,6 +169,11 @@ function home(){
       ${b?`<div class="done">Best: ${b.score}/${b.total} in ${fmt(b.secs)}</div>`:""}
       <button class="btn" data-start="${ex.code}">Start ${ex.day} ${ex.level}</button>
     </div>`}).join("")}</div>
+  <section class="card">
+    <div class="row" style="justify-content:space-between"><h2>Error log</h2>
+      <button class="btn ghost" id="elog">Open error log</button></div>
+    <p class="msg">${errSummary(name)}</p>
+  </section>
   <section style="display:grid;gap:10px">
     <div class="row" style="justify-content:space-between"><h2>Attempts</h2>
       <button class="btn ghost" id="xl" ${attempts.length?"":"disabled"}>Download results (.xlsx)</button></div>
@@ -176,11 +182,13 @@ function home(){
     <tbody>${attempts.length?attempts.map(a=>`<tr><td class="n">${esc(new Date(a.submittedAt).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}))}</td><td>${esc(a.name||"—")}</td><td>${esc(a.day)} ${esc(a.level)}</td><td class="n"><b>${a.score}/${a.total}</b></td><td class="n">${a.verbal}</td><td class="n">${a.quant}</td><td class="n">${a.logical}</td><td class="n">${fmt(a.secs)}</td></tr>`).join(""):`<tr><td colspan="8" class="msg">No attempts yet. Your first submitted test appears here.</td></tr>`}</tbody></table></div>
   </section>
   <section class="ask">
-    <h2>Yashas, after Day 1 please tell us</h2>
-    <ol><li>Is this close to the real Naukri test in style and difficulty?</li><li>Is Regular too easy or Hard too hard? Which sections?</li><li>Should the next tests be the full 60 questions in 60 minutes?</li></ol>
+    <h2>Prabhas, after Day 1 please tell us</h2>
+    <ol><li>Is this close to the real placement test in style and difficulty?</li><li>Is Regular too easy or Hard too hard? Which sections?</li><li>Should the next tests be the full 60 questions in 60 minutes?</li></ol>
   </section>`;
   $("#store").textContent = RESULTS_URL ? "Results are saved to the shared Google Sheet." : "Results are saved in this browser only.";
   $("#nm").oninput = e => ls.set("mock_name", e.target.value.trim());
+  $("#nm").onchange = () => home();
+  $("#elog").onclick = errorLog;
   document.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>start(b.dataset.start));
   const x = $("#xl"); if(x) x.onclick = downloadXlsx;
 }
@@ -260,7 +268,8 @@ function result(rec, saved, timeUp){
   const ex = EXAMS.find(e=>e.code===rec.exam), s = sections(ex);
   const topic = {}; ex.questions.forEach(q=>{ const t=topic[q.topic]||(topic[q.topic]={r:0,n:0}); t.n++; if(L[q.answer]===rec.answers[q.id]) t.r++; });
   $("#app").innerHTML = `
-  <div class="row" style="justify-content:space-between"><div class="meta">${ex.day} · ${ex.level} · submitted${timeUp?" (time up)":""}</div><button class="btn ghost" id="back">All tests</button></div>
+  <div class="row" style="justify-content:space-between"><div class="meta">${ex.day} · ${ex.level} · submitted${timeUp?" (time up)":""}</div>
+    <div class="row"><button class="btn ghost" id="elog">Error log</button><button class="btn ghost" id="back">All tests</button></div></div>
   <div class="score">
     <div class="stat main"><span class="lbl">Score</span><b>${rec.score}/${rec.total}</b></div>
     ${Object.keys(s).map(k=>`<div class="stat"><span class="lbl">${k}</span><b>${rec[k.toLowerCase()]}/${s[k].length}</b></div>`).join("")}
@@ -278,7 +287,88 @@ function result(rec, saved, timeUp){
       <p class="expl">${esc(q.expl)}</p>
     </article>`}).join("")}</div>`;
   $("#back").onclick = ()=>{ st=null; home(); };
+  $("#elog").onclick = ()=>{ st=null; errorLog(); };
   window.scrollTo(0,0);
+}
+
+/* ---------- error log ---------- */
+// Built from saved attempts: one entry per question the person got wrong or skipped, newest first.
+// "Why" notes and "learned" marks stay in this browser; a question missed again after being marked learned comes back.
+const WHY = ["Didn't know the concept", "Calculation slip", "Misread the question", "Guessed", "Ran out of time"];
+let errView = {sec:"All", hide:true};
+function mistakes(name){
+  const nm = String(name||"").trim().toLowerCase(), m = {};
+  attempts.forEach(a=>{
+    if(nm && String(a.name||"").trim().toLowerCase()!==nm) return;
+    const ex = EXAMS.find(e=>e.code===a.exam); if(!ex) return;
+    ex.questions.forEach(q=>{
+      const g = (a.answers||{})[q.id]||"", gi = g?L.indexOf(g):-1;
+      if(gi===q.answer) return;
+      const e = m[q.id] || (m[q.id] = {q, ex, times:0, last:"", gi});
+      e.times++;
+      const at = String(a.submittedAt); if(at > e.last){ e.last = at; e.gi = gi; }
+    });
+  });
+  return Object.values(m).sort((x,y)=>y.last.localeCompare(x.last));
+}
+const learned = (e, notes) => (notes[e.q.id]?.learnedAt||"") > e.last;
+function weakTopics(list){
+  const t = {}; list.forEach(e=>{ const x=t[e.q.topic]||(t[e.q.topic]={topic:e.q.topic, sec:e.q.section, n:0, qs:0}); x.n+=e.times; x.qs++; });
+  return Object.values(t).sort((a,b)=>b.n-a.n);
+}
+function errSummary(name){
+  const notes = ls.get("mock_errnotes",{}), open = mistakes(name).filter(e=>!learned(e,notes));
+  if(!open.length) return `No mistakes to review${name?` for ${esc(name)}`:""} yet. Wrong and skipped questions appear here after each test.`;
+  const top = weakTopics(open).slice(0,3).map(t=>`${esc(t.topic)} (${t.n})`).join(", ");
+  return `${open.length} question${open.length>1?"s":""} to review${name?` for ${esc(name)}`:""}. Weakest topics: ${top}.`;
+}
+function errorLog(){
+  stopClock();
+  const name = ls.get("mock_name",""), notes = ls.get("mock_errnotes",{});
+  const all = mistakes(name), open = all.filter(e=>!learned(e,notes));
+  const list = all.filter(e=>(errView.sec==="All"||e.q.section===errView.sec) && !(errView.hide && learned(e,notes)));
+  const when = s => new Date(s).toLocaleDateString("en-IN",{dateStyle:"medium"});
+  $("#app").innerHTML = `
+  <div class="row" style="justify-content:space-between"><div class="meta">Error log${name?` · ${esc(name)}`:" · everyone"}</div><button class="btn ghost" id="back">All tests</button></div>
+  <header style="display:grid;gap:6px">
+    <h1>Error log</h1>
+    <p class="note">Every question ${name?"you":"anyone"} got wrong or skipped, with the right answer and why. Note why you missed it, and mark it as learned once it makes sense. If you miss it again, it comes back.${name?"":" Enter your name on the home page to see only your own mistakes."}</p>
+  </header>
+  <div class="score">
+    <div class="stat main"><span class="lbl">To review</span><b>${open.length}</b></div>
+    <div class="stat"><span class="lbl">Learned</span><b>${all.length-open.length}</b></div>
+    ${["Quant","Logical","Verbal"].map(s=>`<div class="stat"><span class="lbl">${s}</span><b>${open.filter(e=>e.q.section===s).length}</b></div>`).join("")}
+  </div>
+  ${open.length?`<div class="tablewrap"><table><thead><tr><th>Top topics to revise</th><th>Section</th><th>Times missed</th></tr></thead><tbody>
+    ${weakTopics(open).slice(0,6).map(t=>`<tr><td>${esc(t.topic)}</td><td>${esc(t.sec)}</td><td class="n">${t.n}</td></tr>`).join("")}</tbody></table></div>`:""}
+  <div class="row">
+    ${["All","Quant","Logical","Verbal"].map(s=>`<button class="btn ${errView.sec===s?"":"quiet"}" data-sec="${s}">${s}</button>`).join("")}
+    <label class="msg row" style="gap:6px"><input type="checkbox" id="hide" ${errView.hide?"checked":""}> Hide learned</label>
+  </div>
+  <div style="display:grid;gap:12px">${list.length?list.map(e=>{ const {q,ex,gi}=e, n=notes[q.id]||{}, done=learned(e,notes); return `
+    <article class="sheet">
+      <div class="qhead"><span class="tag">${esc(q.section)}</span><span class="tag">${esc(q.topic)}</span>
+        <span class="pill ${done?"r":gi<0?"s":"w"}">${done?"Learned":gi<0?"Skipped":"Wrong"}</span>
+        <span class="tag">${esc(ex.day)} ${esc(ex.level)} · Q${q.n}</span><span class="tag">${e.times>1?`Missed ${e.times} times · `:""}${esc(when(e.last))}</span></div>
+      <p class="qtext">${esc(q.text)}</p>
+      <div class="opts">${q.options.map((o,k)=>`<button class="opt ${k===q.answer?"right":k===gi?"wrong":""}" disabled><span class="bub">${L[k]}</span><span>${esc(o)}</span></button>`).join("")}</div>
+      <p class="expl">${esc(q.expl)}</p>
+      <div class="row" style="justify-content:space-between">
+        <div class="row"><label class="lbl" for="why-${q.id}">Why I missed it</label>
+          <select id="why-${q.id}" data-why="${q.id}"><option value="">Choose…</option>${WHY.map(w=>`<option ${n.why===w?"selected":""}>${esc(w)}</option>`).join("")}</select></div>
+        <button class="btn ${done?"ghost":"quiet"}" data-learn="${q.id}">${done?"Learned ✓ (undo)":"Mark as learned"}</button>
+      </div>
+    </article>`}).join(""):`<p class="msg">${all.length?"Nothing here with these filters.":"No mistakes logged yet. Take a test and any wrong or skipped questions will show up here."}</p>`}</div>`;
+  const save = f => { const x = ls.get("mock_errnotes",{}); f(x); ls.set("mock_errnotes",x); };
+  $("#back").onclick = home;
+  document.querySelectorAll("[data-sec]").forEach(b=>b.onclick=()=>{ errView.sec=b.dataset.sec; errorLog(); });
+  $("#hide").onchange = e=>{ errView.hide=e.target.checked; errorLog(); };
+  document.querySelectorAll("[data-why]").forEach(s=>s.onchange=()=>save(x=>{ (x[s.dataset.why]=x[s.dataset.why]||{}).why=s.value; }));
+  document.querySelectorAll("[data-learn]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.learn, e=all.find(x=>x.q.id===id), was=learned(e,notes);
+    save(x=>{ const v=x[id]=x[id]||{}; if(was) delete v.learnedAt; else v.learnedAt=new Date().toISOString(); });
+    errorLog();
+  });
 }
 
 /* ---------- excel ---------- */
@@ -294,6 +384,13 @@ async function downloadXlsx(){
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), "Attempts");
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(detail), "Question detail");
+  const opt = (q,k) => `${L[k]}. ${q.options[k]}`;
+  const errs = [];
+  attempts.forEach(a=>{ const ex=EXAMS.find(e=>e.code===a.exam); if(!ex) return; ex.questions.forEach(q=>{ const g=a.answers?.[q.id]||"";
+    if(g===L[q.answer]) return;
+    errs.push({Submitted:new Date(a.submittedAt).toLocaleString("en-IN"), Name:a.name||"", Test:`${a.day} ${a.level}`, Q:q.n, Section:q.section, Topic:q.topic,
+      Question:q.text, "Your answer":g?opt(q,L.indexOf(g)):"Skipped", "Correct answer":opt(q,q.answer), Explanation:q.expl}); }); });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(errs), "Error log");
   try{ XLSX.writeFile(wb,"aptitude-mock-results.xlsx"); msg.textContent="Saved."; }
   catch(e){ msg.textContent = "Could not save the file here."; }
 }
