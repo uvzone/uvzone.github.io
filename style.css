@@ -148,26 +148,50 @@ footer { text-align: center; font-size: 0.95rem; }
   color-scheme: dark;
 }
 
-/* Theme picker */
+/* Theme + language dropdowns (made by theme.js and lang.js) */
 .looks {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px 22px;
   justify-content: center;
   align-items: center;
   font-size: 0.95rem;
 }
-.looks span { font-weight: 700; }
-.looks button {
-  font-family: var(--body);
-  font-size: 0.9rem;
+.looks .pick {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 700;
-  padding: 2px 12px;
+}
+.looks select {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--body);
+  font-size: 1rem;           /* 16px+ so phones don't zoom in when tapped */
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--card);
   border: 2px solid var(--ink);
   border-radius: 999px;
   box-shadow: 2px 2px 0 var(--ink);
-  background: var(--card);
-  color: var(--ink);
+  padding: 3px 32px 3px 14px;
+  cursor: pointer;
 }
-.looks button.here { background: var(--sun); }
+.looks select:hover { background: var(--sun); }
+.looks select:focus-visible { outline: 3px dashed var(--pop); outline-offset: 2px; }
+.looks select option { background: var(--card); color: var(--ink); }
+.looks .pick::after {        /* the little down arrow */
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transform: translateY(-75%) rotate(45deg);
+  pointer-events: none;
+}
 .t-empty { display: none !important; }

@@ -13,30 +13,38 @@ function setLook(id) {
   if (id === "sketch") document.documentElement.removeAttribute("data-look");
   else document.documentElement.setAttribute("data-look", id);
   try { localStorage.setItem("uvzone-look", id); } catch (e) {}
-  document.querySelectorAll(".looks button").forEach(function (b) {
-    b.classList.toggle("here", b.dataset.id === id);
-  });
+  var pick = document.getElementById("look-pick");
+  if (pick) pick.value = id;
 }
 
 // Use the saved theme straight away so the page doesn't flash.
 var savedLook = "sketch";
 try { savedLook = localStorage.getItem("uvzone-look") || "sketch"; } catch (e) {}
+if (!LOOKS.some(function (t) { return t.id === savedLook; })) savedLook = "sketch";
 setLook(savedLook);
 
-// Add the theme buttons under the menu on every page.
+// Add the theme dropdown under the menu on every page.
 document.addEventListener("DOMContentLoaded", function () {
   var nav = document.querySelector("nav");
   if (!nav) return;
   var box = document.createElement("div");
   box.className = "looks";
-  box.innerHTML = '<span data-t="theme_label">Theme:</span>';
+  var label = document.createElement("label");
+  label.className = "pick";
+  label.innerHTML = '🎨 <span data-t="theme_label">Theme:</span>';
+  var sel = document.createElement("select");
+  sel.id = "look-pick";
   LOOKS.forEach(function (t) {
-    var b = document.createElement("button");
-    b.innerHTML = t.emoji + ' <span data-t="look_' + t.id + '">' + t.name + "</span>";
-    b.dataset.id = t.id;
-    b.onclick = function () { setLook(t.id); };
-    box.appendChild(b);
+    var o = document.createElement("option");
+    o.value = t.id;
+    o.textContent = t.emoji + " " + t.name;
+    o.dataset.t = "look_" + t.id;   // lang.js swaps in the name in the chosen language
+    o.dataset.pre = t.emoji + " ";
+    sel.appendChild(o);
   });
+  sel.onchange = function () { setLook(sel.value); };
+  label.appendChild(sel);
+  box.appendChild(label);
   nav.after(box);
   setLook(savedLook);
 });

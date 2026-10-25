@@ -19,7 +19,7 @@ var WORDS = {
   arcade:  { en: "Arcade", hi: "आर्केड", mr: "आर्केड", te: "ఆర్కేడ్", kn: "ಆರ್ಕೇಡ್", ja: "アーケード" },
   arcade_title: { en: "Mega Arcade", hi: "मेगा आर्केड", mr: "मेगा आर्केड", te: "మెగా ఆర్కేడ్", kn: "ಮೆಗಾ ಆರ್ಕೇಡ್", ja: "メガ アーケード" },
   menu:    { en: "Menu", hi: "मेनू", mr: "मेनू", te: "మెనూ", kn: "ಮೆನು", ja: "メニュー" },
-  ar_text: { en: "12 mini games: racing, snake, Tetris and more!", hi: "12 छोटे खेल: रेसिंग, साँप, टेट्रिस और बहुत कुछ!", mr: "12 छोटे खेळ: रेसिंग, साप, टेट्रिस आणि बरेच काही!", te: "12 చిన్న ఆటలు: రేసింగ్, పాము, టెట్రిస్ ఇంకా మరెన్నో!", kn: "12 ಪುಟ್ಟ ಆಟಗಳು: ರೇಸಿಂಗ್, ಹಾವು, ಟೆಟ್ರಿಸ್ ಮತ್ತು ಇನ್ನಷ್ಟು!", ja: "ミニゲームが 12こ：レース、ヘビ、テトリスなど！" },
+  ar_text: { en: "46 mini games: racing, snake, Tetris and more!", hi: "46 छोटे खेल: रेसिंग, साँप, टेट्रिस और बहुत कुछ!", mr: "46 छोटे खेळ: रेसिंग, साप, टेट्रिस आणि बरेच काही!", te: "46 చిన్న ఆటలు: రేసింగ్, పాము, టెట్రిస్ ఇంకా మరెన్నో!", kn: "46 ಪುಟ್ಟ ಆಟಗಳು: ರೇಸಿಂಗ್, ಹಾವು, ಟೆಟ್ರಿಸ್ ಮತ್ತು ಇನ್ನಷ್ಟು!", ja: "ミニゲームが 46こ：レース、ヘビ、テトリスなど！" },
   arcade_keys: { en: "Keyboard: arrows + space. On phone use the on-screen buttons.", hi: "कीबोर्ड: तीर वाली कुंजियाँ + स्पेस। फ़ोन पर स्क्रीन के बटन इस्तेमाल करो।", mr: "कीबोर्ड: बाण कळा + स्पेस. फोनवर स्क्रीनवरील बटणे वापरा.", te: "కీబోర్డ్: బాణం కీలు + స్పేస్. ఫోన్‌లో తెరపై ఉన్న బటన్లు వాడు.", kn: "ಕೀಬೋರ್ಡ್: ಬಾಣದ ಕೀಲಿಗಳು + ಸ್ಪೇಸ್. ಫೋನ್‌ನಲ್ಲಿ ಪರದೆಯ ಬಟನ್‌ಗಳನ್ನು ಬಳಸು.", ja: "キーボード：やじるしキー と スペース。スマホでは がめんの ボタンを つかってね。" },
   ar_note: { en: "", hi: "खेलों के नाम और सुझाव अंग्रेज़ी में हैं।", mr: "खेळांची नावे आणि सूचना इंग्रजीत आहेत.", te: "ఆటల పేర్లు, సూచనలు ఇంగ్లీషులో ఉన్నాయి.", kn: "ಆಟಗಳ ಹೆಸರು ಮತ್ತು ಸೂಚನೆಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ.", ja: "ゲームの なまえと ヒントは えいごだよ。" },
   yash:    { en: "Prabhas", hi: "Prabhas", mr: "Prabhas", te: "Prabhas", kn: "Prabhas", ja: "Prabhas" },
@@ -190,6 +190,7 @@ var WORDS = {
 // ----- The machinery (no need to change below) -----
 var curLang = "en";
 try { curLang = localStorage.getItem("uvzone-lang") || "en"; } catch (e) {}
+if (!LANGS.some(function (l) { return l.id === curLang; })) curLang = "en";
 
 // t("key") gives the word in the current language. {n} gets replaced by a number.
 function t(key, n) {
@@ -203,16 +204,16 @@ function applyLang() {
   document.documentElement.lang = curLang;
   document.querySelectorAll("[data-t]").forEach(function (el) {
     var s = t(el.dataset.t);
-    el.innerHTML = s;
+    if (el.tagName === "OPTION") el.textContent = (el.dataset.pre || "") + s;  // dropdown items are plain text
+    else el.innerHTML = s;
     el.classList.toggle("t-empty", !s);
     // Hover (or long-press) shows the English word, to help learning.
     var en = WORDS[el.dataset.t] ? WORDS[el.dataset.t].en.replace(/<[^>]+>/g, "") : "";
     if (curLang !== "en" && en) el.title = "English: " + en;
     else el.removeAttribute("title");
   });
-  document.querySelectorAll(".langs button").forEach(function (b) {
-    b.classList.toggle("here", b.dataset.id === curLang);
-  });
+  var pick = document.getElementById("lang-pick");
+  if (pick) pick.value = curLang;
   if (window.onLangChange) window.onLangChange();
 }
 
@@ -222,19 +223,30 @@ function setLang(id) {
   applyLang();
 }
 
+// Add the language dropdown next to the theme dropdown (under the menu).
 document.addEventListener("DOMContentLoaded", function () {
-  var after = document.querySelector(".looks") || document.querySelector("nav");
-  if (!after) return;
-  var box = document.createElement("div");
-  box.className = "looks langs";
-  box.innerHTML = '<span data-t="lang_label">Language:</span>';
-  LANGS.forEach(function (l) {
-    var b = document.createElement("button");
-    b.textContent = l.name;
-    b.dataset.id = l.id;
-    b.onclick = function () { setLang(l.id); };
-    box.appendChild(b);
-  });
-  after.after(box);
+  var box = document.querySelector(".looks");
+  var nav = document.querySelector("nav");
+  if (!box && nav) {
+    box = document.createElement("div");
+    box.className = "looks";
+    nav.after(box);
+  }
+  if (box) {
+    var label = document.createElement("label");
+    label.className = "pick";
+    label.innerHTML = '🌐 <span data-t="lang_label">Language:</span>';
+    var sel = document.createElement("select");
+    sel.id = "lang-pick";
+    LANGS.forEach(function (l) {
+      var o = document.createElement("option");
+      o.value = l.id;
+      o.textContent = l.name;
+      sel.appendChild(o);
+    });
+    sel.onchange = function () { setLang(sel.value); };
+    label.appendChild(sel);
+    box.appendChild(label);
+  }
   applyLang();
 });
