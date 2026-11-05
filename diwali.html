@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Messi’s Hyderabad Diwali Trip</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap">
+<style>
+:root{--sky:#74ACDF;--skyd:#4a8cc7;--bg:#eaf4fc;--card:#fff;--ink:#12263a;--mute:#5d7389;--gold:#d99a00;--gold2:#f5c542;--line:#cfe2f3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a26;--card:#16283a;--ink:#eef6fd;--mute:#9db6cc;--line:#2a4259;--gold:#f5c542;--skyd:#74ACDF}}
+:root[data-theme="dark"]{--bg:#0e1a26;--card:#16283a;--ink:#eef6fd;--mute:#9db6cc;--line:#2a4259;--gold:#f5c542;--skyd:#74ACDF}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 40px}
+.hero{position:relative;overflow:hidden;border-radius:22px;padding:22px 16px 18px;text-align:center;color:#0b2540;
+background:repeating-linear-gradient(90deg,var(--sky) 0 34px,#fff 34px 68px);border:3px solid var(--gold2);box-shadow:0 6px 0 var(--gold)}
+.hero .plate{position:relative;display:inline-block;background:rgba(255,255,255,.92);border-radius:16px;padding:10px 18px 12px}
+.sub{font-weight:800;letter-spacing:.14em;font-size:12px;color:var(--skyd)}
+h1{margin:2px 0 0;font-family:"Bebas Neue",Impact,"Arial Narrow",sans-serif;font-weight:400;font-size:38px;line-height:1;letter-spacing:.03em;color:#0b2540}
+.num{font-family:"Bebas Neue",Impact,sans-serif;font-size:76px;line-height:.9;color:#0b2540;-webkit-text-stroke:2px var(--gold);margin-top:4px}
+.spark{position:absolute;color:var(--gold);animation:tw 2.2s ease-in-out infinite;font-size:20px}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(20deg)}}
+@media (prefers-reduced-motion:reduce){.spark{animation:none}}
+.prog{margin:16px 0;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px}
+.prow{display:flex;justify-content:space-between;align-items:baseline;font-weight:800}
+.prow b{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;font-size:30px;color:var(--skyd)}
+.bar{position:relative;height:18px;border-radius:99px;background:var(--line);margin-top:6px}
+.fill{height:100%;width:0;border-radius:99px;background:repeating-linear-gradient(90deg,var(--sky) 0 14px,#fff 14px 22px);border:2px solid var(--skyd);transition:width .4s}
+.ball{position:absolute;top:-6px;left:0;font-size:26px;transition:left .4s;transform:translateX(-50%)}
+.msg{margin-top:10px;font-size:14px;color:var(--mute);font-weight:600}
+form{display:grid;grid-template-columns:1fr auto;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:10px}
+input,select,button{font:inherit;color:var(--ink)}
+input,select{min-height:48px;border:2px solid var(--line);border-radius:12px;padding:0 12px;background:var(--bg);width:100%}
+form select{grid-column:1/2}
+.add{grid-row:1/3;grid-column:2;border:0;border-radius:12px;background:var(--gold2);color:#3a2a00;font-weight:900;font-size:16px;padding:0 16px;min-width:72px;box-shadow:0 3px 0 var(--gold)}
+.add:active{transform:translateY(2px);box-shadow:none}
+.cat{margin-top:14px;background:var(--card);border:2px solid var(--line);border-radius:18px;overflow:hidden}
+.cat h2{margin:0;display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--sky);color:#0b2540;font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;font-size:24px;letter-spacing:.04em}
+.cat h2 small{margin-left:auto;font:800 13px system-ui,sans-serif;background:#fff;border-radius:99px;padding:2px 10px}
+.item{display:flex;align-items:center;gap:10px;padding:4px 8px 4px 12px;border-top:1px solid var(--line);min-height:52px}
+.item label{flex:1;display:flex;align-items:center;gap:12px;min-height:48px;font-weight:600;font-size:17px;word-break:break-word}
+.item input{width:26px;height:26px;min-height:0;accent-color:var(--skyd);flex:none}
+.item.done label span{text-decoration:line-through;color:var(--mute)}
+.del{width:44px;height:44px;border:0;background:none;font-size:20px;border-radius:12px;opacity:.7}
+.del:active{background:var(--line)}
+.empty{text-align:center;color:var(--mute);padding:26px 10px;font-weight:600}
+.empty button{margin-top:10px;min-height:46px;padding:0 18px;border:2px solid var(--skyd);background:var(--card);border-radius:12px;font-weight:800;color:var(--skyd)}
+footer{text-align:center;margin-top:22px;color:var(--gold);font-weight:800;letter-spacing:.08em;font-size:13px}
+.chk{position:fixed;width:84px;height:84px;border-radius:50%;pointer-events:none;z-index:40;opacity:.9;background:repeating-conic-gradient(var(--gold2) 0 7deg,transparent 7deg 20deg);-webkit-mask:radial-gradient(circle,transparent 16%,#000 18%,#000 60%,transparent 70%);mask:radial-gradient(circle,transparent 16%,#000 18%,#000 60%,transparent 70%);filter:drop-shadow(0 0 5px var(--gold2));animation:spin 2.4s linear infinite}
+.chk.l{left:-50px}.chk.r{right:-50px;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.chk{animation:none}}
+.mini{animation:bob 1.4s ease-in-out infinite;margin:-6px 0 -10px auto;margin-right:14px}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-4deg)}}
+@media (prefers-reduced-motion:reduce){.mini{animation:none}}
+.prog{position:relative}
+.say{position:absolute;left:50%;top:-20px;transform:translateX(-50%) scale(0);background:var(--gold2);color:#0b2540;font-family:"Bebas Neue",Impact,sans-serif;font-size:22px;letter-spacing:.05em;padding:2px 14px;border-radius:99px;border:2px solid #0b2540;white-space:nowrap;pointer-events:none;z-index:5}
+.say.on{animation:pop 2.6s ease-out}
+@keyframes pop{0%{transform:translateX(-50%) scale(0)}10%,80%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(0)}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="chk l" style="top:22%"></div><div class="chk r" style="top:40%"></div><div class="chk l" style="top:62%"></div><div class="chk r" style="top:80%"></div>
+<div class="wrap">
+  <a href="index.html" style="display:inline-flex;align-items:center;min-height:40px;margin:0 0 10px;padding:0 14px;border-radius:99px;background:var(--card);border:2px solid var(--line);color:var(--ink);font-weight:800;font-size:14px;text-decoration:none">← UV Zone</a>
+  <header class="hero">
+    <span class="spark" style="left:10%;top:12%">✨</span><span class="spark" style="right:9%;top:10%;animation-delay:.7s">🎆</span>
+    <span class="spark" style="left:6%;bottom:14%;animation-delay:1.2s">🪔</span><span class="spark" style="right:7%;bottom:12%;animation-delay:.3s">🪔</span>
+    <div class="plate">
+      <div class="sub">⚽ ARGENTINA · ALBICELESTE</div>
+      <h1>Messi’s Hyderabad Diwali Trip</h1>
+      <svg viewBox="0 0 200 220" width="170" style="display:block;margin:6px auto 2px;filter:drop-shadow(0 4px 0 rgba(217,154,0,.55))" role="img" aria-label="Argentina jersey, MESSI number 10"><defs><clipPath id="jc"><path d="M60 20 L85 12 Q100 30 115 12 L140 20 L190 55 L170 95 L148 82 L148 205 Q100 213 52 205 L52 82 L30 95 L10 55 Z"/></clipPath></defs><g clip-path="url(#jc)"><rect width="200" height="220" fill="#74ACDF"/><rect x="28" width="18" height="220" fill="#fff"/><rect x="64" width="18" height="220" fill="#fff"/><rect x="100" width="18" height="220" fill="#fff"/><rect x="136" width="18" height="220" fill="#fff"/><rect x="172" width="18" height="220" fill="#fff"/><rect x="0" y="196" width="200" height="24" fill="#0b2540" opacity=".0"/></g><path d="M60 20 L85 12 Q100 30 115 12 L140 20 L190 55 L170 95 L148 82 L148 205 Q100 213 52 205 L52 82 L30 95 L10 55 Z" fill="none" stroke="#0b2540" stroke-width="3" stroke-linejoin="round"/><path d="M85 12 Q100 30 115 12" fill="none" stroke="#0b2540" stroke-width="7" stroke-linecap="round"/><path d="M10 55 L30 95 M190 55 L170 95" stroke="#d99a00" stroke-width="6"/><text x="100" y="66" text-anchor="middle" font-family="'Bebas Neue',Impact,sans-serif" font-size="26" letter-spacing="3" fill="#0b2540" stroke="#fff" stroke-width=".8">MESSI</text><text x="100" y="160" text-anchor="middle" font-family="'Bebas Neue',Impact,sans-serif" font-size="100" fill="#0b2540" stroke="#f5c542" stroke-width="2.5" paint-order="stroke">10</text><text x="100" y="186" text-anchor="middle" font-size="13">🪔</text></svg>
+      <div class="sub">🪔 HAPPY DIWALI 🪔</div>
+    </div>
+  </header>
+
+  <section class="prog"><div class="say" id="say">⚽ ANKARA MESSI! ANKARA MESSI!</div>
+    <div class="prow"><span>Packed</span><svg class="mini" viewBox="0 0 48 58" width="46" aria-hidden="true"><circle cx="22" cy="9" r="6.5" fill="#e8b98d"/><path d="M15.5 8 Q22 0 28.5 8 Q22 4.5 15.5 8Z" fill="#3b2a1d"/><path d="M17 17 H27 L30 36 H14Z" fill="#74ACDF"/><rect x="18" y="17" width="3" height="19" fill="#fff"/><rect x="23.5" y="17" width="3" height="19" fill="#fff"/><path d="M17 19 L9 28 M27 19 L35 26" stroke="#74ACDF" stroke-width="4" stroke-linecap="round"/><rect x="14" y="36" width="16" height="7" rx="2" fill="#0b2540"/><path d="M18 43 L17 54 M26 43 L34 49" stroke="#e8b98d" stroke-width="4.5" stroke-linecap="round"/><path d="M17 54 h-4 M34 49 l3 -2" stroke="#0b2540" stroke-width="4" stroke-linecap="round"/><circle cx="42" cy="50" r="4.5" fill="#fff" stroke="#0b2540" stroke-width="1.5"/></svg><b id="pct">0%</b></div>
+    <div class="bar"><div class="fill" id="fill"></div><span class="ball" id="ball">⚽</span></div>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <div id="sync" style="text-align:center;font-size:13px;font-weight:700;color:var(--mute);margin:-4px 0 10px">Checking sign-in…</div>
+  <form id="f">
+    <input id="t" placeholder="Add an item…" maxlength="80" autocomplete="off" aria-label="Item name">
+    <select id="c" aria-label="Category"></select>
+    <button class="add" type="submit">＋ Add</button>
+  </form>
+
+  <main id="list"></main>
+  <a href="https://www.youtube.com/shorts/GgvE_k1xyEM" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;margin-top:18px;border-radius:14px;background:var(--gold2);color:#0b2540;font-weight:900;text-decoration:none;box-shadow:0 3px 0 var(--gold)">▶️ Watch the Ankara Messi short</a>
+  <footer>🎆 GOLD STANDARD PACKING · VAMOS! 🎆</footer>
+</div>
+<script>
+var CATS=[["Clothes & Diwali outfits","👕"],["Gifts","🎁"],["Documents & tickets","🎫"],["Electronics & chargers","🔌"],["Toiletries","🧴"],["Medicines","💊"],["Snacks","🍪"],["Crackers","🎇"]];
+var KEY="messi-diwali-pack-v1",items=[];
+// Starter list: [category number in CATS (0 = clothes ... 7 = crackers), item]. Used the first time the page opens.
+var STARTER=[
+  [0,"Diwali kurta pyjama (cotton)"],
+  [0,"Messi jersey ⚽"],
+  [0,"T-shirts"],
+  [0,"Shorts"],
+  [0,"Night suit"],
+  [0,"Innerwear & socks"],
+  [0,"Light jacket for evenings"],
+  [0,"Sandals"],
+  [1,"Gifts for grandparents"],
+  [1,"Gifts for cousins"],
+  [1,"Handmade Diwali cards"],
+  [1,"Dry fruit box"],
+  [2,"Tickets"],
+  [2,"Aadhaar card copy"],
+  [2,"Card with Mom & Dad's phone number"],
+  [2,"Pocket money"],
+  [3,"Camera"],
+  [3,"Camera charger"],
+  [3,"Tablet"],
+  [3,"Tablet charger"],
+  [3,"Headphones"],
+  [3,"Power bank"],
+  [4,"Toothbrush & toothpaste"],
+  [4,"Soap & kids shampoo"],
+  [4,"Towel"],
+  [4,"Comb"],
+  [4,"Sunscreen"],
+  [4,"Lip balm"],
+  [5,"Band-aids"],
+  [5,"Burn cream (for crackers)"],
+  [5,"Fever medicine"],
+  [5,"ORS packets"],
+  [5,"Mosquito repellent"],
+  [5,"Hand sanitiser"],
+  [6,"Laddu"],
+  [6,"Roll"],
+  [6,"Water bottle"],
+  [6,"Biscuits"],
+  [6,"Fruits"],
+  [6,"Juice boxes"],
+  [7,"Sparklers (phuljhadi)"],
+  [7,"Flower pots (anar)"],
+  [7,"Ground chakras"],
+  [7,"Long agarbatti for lighting"]
+];
+function starter(){return STARTER.map(function(s,i){return{id:i+1,t:s[1],c:s[0],d:false}})}
+function load(){try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):starter()}catch(e){items=starter()}if(!Array.isArray(items))items=starter()}
+var ref=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}if(ref){try{ref.set({items:items}).catch(function(){sync("⚠️ Couldn’t sync, saved on this device")})}catch(e){}}}
+function sync(t){document.getElementById("sync").textContent=t}
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var sel=document.getElementById("c");
+CATS.forEach(function(c,i){var o=document.createElement("option");o.value=i;o.textContent=c[1]+" "+c[0];sel.appendChild(o)});
+function render(){
+  var done=items.filter(function(i){return i.d}).length,n=items.length,p=n?Math.round(done/n*100):0;
+  document.getElementById("pct").textContent=p+"%";
+  document.getElementById("fill").style.width=p+"%";
+  document.getElementById("ball").style.left=Math.max(3,Math.min(97,p))+"%";
+  document.getElementById("msg").textContent=!n?"Start adding items to your squad list.":p==100?"🏆 GOAL! Everything is packed. Vamos!":done+" of "+n+" packed. "+(n-done)+" to go.";
+  var h="";
+  if(!n){h='<div class="empty">Your bag is empty. Type your first item above.<br><button type="button" id="starter">⚽ Add the starter list</button></div>'}
+  CATS.forEach(function(c,ci){
+    var l=items.filter(function(i){return i.c==ci});if(!l.length)return;
+    var d=l.filter(function(i){return i.d}).length;
+    h+='<section class="cat"><h2><span>'+c[1]+'</span>'+c[0]+'<small>'+d+'/'+l.length+'</small></h2>';
+    l.forEach(function(i){h+='<div class="item'+(i.d?' done':'')+'"><label><input type="checkbox" data-k="'+i.id+'"'+(i.d?' checked':'')+'><span>'+esc(i.t)+'</span></label><button class="del" data-x="'+i.id+'" aria-label="Delete '+esc(i.t)+'">🗑️</button></div>'});
+    h+='</section>';
+  });
+  document.getElementById("list").innerHTML=h;
+}
+document.getElementById("f").onsubmit=function(e){
+  e.preventDefault();var t=document.getElementById("t"),v=t.value.trim();if(!v)return;
+  items.push({id:Date.now()+Math.random(),t:v,c:+sel.value,d:false});t.value="";save();render();t.focus();
+  var b=document.querySelector(".add").getBoundingClientRect();burst(b.left+b.width/2,b.top+b.height/2);added=true;ac();launch(3);
+};
+document.getElementById("list").onclick=function(e){
+  if(e.target.id==="starter"){items=starter();save();render();return}
+  var x=e.target.getAttribute("data-x"),k=e.target.getAttribute("data-k");
+  if(x){items=items.filter(function(i){return String(i.id)!==x});save();render()}
+  else if(k){items.forEach(function(i){if(String(i.id)===k)i.d=e.target.checked});save();render()}
+};
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),P=[],run=false,RM=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches,COL=["#f5c542","#ffd978","#d99a00","#fff","#74ACDF","#ff9d2e"];
+function fit(){cv.width=innerWidth;cv.height=innerHeight}
+fit();addEventListener("resize",fit);
+function burst(x,y){if(RM)return;for(var i=0;i<46;i++){var a=Math.random()*6.283,s=2+Math.random()*5;P.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:COL[i%COL.length]})}if(!run){run=true;requestAnimationFrame(tick)}}
+function tick(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(function(p){return p.l>0});P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.vx*=.985;p.l-=.016;cx.globalAlpha=Math.max(p.l,0);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,2.4,0,6.283);cx.fill()});cx.globalAlpha=1;if(P.length)requestAnimationFrame(tick);else{run=false;cx.clearRect(0,0,cv.width,cv.height)}}
+function show(n){for(var i=0;i<n;i++)setTimeout(function(){burst(innerWidth*(.15+Math.random()*.7),innerHeight*(.12+Math.random()*.3))},i*320)}
+var AC=null,pend=false,added=false;
+function ac(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}return AC}
+function ok(){return AC&&AC.state==="running"}
+function whistle(d){if(!ok())return;var t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.setValueAtTime(600,t);o.frequency.exponentialRampToValueAtTime(2600,t+d);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.05,t+.1);g.gain.linearRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.05)}
+function crack(){if(!ok())return;var t=AC.currentTime,n=AC.sampleRate*.35,b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++)a[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type="highpass";f.frequency.value=700;g.gain.value=.35;s.connect(f);f.connect(g);g.connect(AC.destination);s.start(t)}
+function whirr(d){if(!ok())return;var t=AC.currentTime,o=AC.createOscillator(),l=AC.createOscillator(),lg=AC.createGain(),g=AC.createGain(),f=AC.createBiquadFilter();o.type="sawtooth";o.frequency.setValueAtTime(140,t);o.frequency.linearRampToValueAtTime(340,t+d);l.type="square";l.frequency.value=20;lg.gain.value=.02;g.gain.setValueAtTime(.025,t);g.gain.linearRampToValueAtTime(.0001,t+d);f.type="lowpass";f.frequency.value=1500;l.connect(lg);lg.connect(g.gain);o.connect(f);f.connect(g);g.connect(AC.destination);o.start(t);l.start(t);o.stop(t+d);l.stop(t+d)}
+function rocket(tx,ty,delay){setTimeout(function(){if(RM)return;var x=tx+(Math.random()-.5)*80,y=innerHeight,dur=700+Math.random()*300,t0=performance.now();whistle(dur/1000);var iv=setInterval(function(){var k=Math.min((performance.now()-t0)/dur,1),px=x+(tx-x)*k,py=y+(ty-y)*k;for(var j=0;j<2;j++)P.push({x:px,y:py,vx:(Math.random()-.5)*.8,vy:Math.random()*.6,l:.55,c:j?"#ffd978":"#ff9d2e"});if(!run){run=true;requestAnimationFrame(tick)}if(k>=1){clearInterval(iv);crack();burst(tx,ty)}},16)},delay)}
+function chakras(){if(RM)return;document.querySelectorAll(".chk").forEach(function(el,i){try{el.animate([{transform:"translateY(70vh) rotate(0deg)",opacity:0},{transform:"translateY(0) rotate(900deg)",opacity:.95}],{duration:1100,delay:i*140,easing:"ease-out",fill:"backwards"})}catch(e){}});setTimeout(function(){whirr(2.4)},120)}
+function ankara(){var s=document.getElementById("say");s.classList.remove("on");void s.offsetWidth;s.classList.add("on");try{if(ok()&&window.speechSynthesis){var u=new SpeechSynthesisUtterance("Ankara Messi! Ankara Messi! Ankara Messi!");u.rate=1.25;u.pitch=1.1;speechSynthesis.cancel();speechSynthesis.speak(u)}}catch(e){}}
+function launch(n){chakras();ankara();for(var i=0;i<n;i++)rocket(innerWidth*(.15+Math.random()*.7),innerHeight*(.12+Math.random()*.3),150+i*380)}
+setTimeout(function(){ac();launch(4);setTimeout(function(){if(!ok())pend=true},300)},400);
+addEventListener("pointerdown",function(){ac();if(pend&&!added){pend=false;setTimeout(function(){launch(3)},150)}},{once:true});
+load();render();
+(async function(){
+  try{
+    var u=await claude.use("user"),d=await claude.use("db");
+    if(!u||!d){sync("Sign in to Claude to sync. Saved on this device only.");return}
+    var id=await u.id();
+    if(!id){sync("Sign in to Claude to sync. Saved on this device only.");return}
+    ref=d.doc("data/users/"+id+"/packing");
+    var s=await ref.get();
+    if(s.exists&&Array.isArray(s.data().items)){items=s.data().items;try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+    else if(items.length){ref.set({items:items}).catch(function(){})}
+    render();sync("🔒 Signed in with your Claude account. Your list is synced and private.");
+  }catch(e){sync("Saved on this device only.")}
+})();
+</script>
+</body>
+</html>
