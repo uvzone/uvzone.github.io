@@ -78,6 +78,10 @@ footer{text-align:center;margin-top:22px;color:var(--gold);font-weight:800;lette
 .cbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--bg)}
 .cbar button{min-height:34px;padding:0 10px;border:2px solid var(--line);border-radius:99px;background:var(--card);font-weight:800;font-size:12px}
 .cbar button:active{background:var(--line)}
+.fold{flex:none;width:36px;height:32px;margin-left:4px;border:0;border-radius:99px;background:rgba(255,255,255,.6);color:#0b2540;font-size:16px;font-weight:900;line-height:1}
+.cadd{display:flex;gap:8px;padding:8px 10px;border-top:1px dashed var(--line)}
+.cadd input{flex:1;min-width:0;min-height:42px;width:auto}
+.cadd button{flex:none;min-height:42px;padding:0 14px;border:2px solid var(--line);border-radius:99px;background:var(--card);font-weight:800;font-size:14px}
 .toast button{min-height:38px;padding:0 16px;border:0;border-radius:99px;background:var(--gold2);color:#0b2540;font-weight:900}
 </style>
 </head>
@@ -187,9 +191,11 @@ function render(){
     var l=items.filter(function(i){return i.c==ci});if(!l.length)return;
     var a=l.filter(function(i){return !i.na}),d=a.filter(function(i){return i.d}).length,x=l.length-a.length;
     h+='<section class="cat"><h2><span>'+c[1]+'</span>'+c[0]+'<small>'+(a.length?d+'/'+a.length:'')+(x?(a.length?' · ':'')+x+' N/A':'')+'</small>'+
-      '</h2><div class="cbar"><button type="button" data-cb="all" data-cat="'+ci+'">✅ Check all</button><button type="button" data-cb="none" data-cat="'+ci+'">⬜ Uncheck all</button><button type="button" data-cb="narest" data-cat="'+ci+'">🚫 N/A rest</button><button type="button" data-cb="naall" data-cat="'+ci+'">🚫 N/A all</button><button type="button" data-cb="unna" data-cat="'+ci+'">↩️ Clear N/A</button></div>';
+      '<button type="button" class="fold" data-col="'+ci+'" aria-expanded="'+(shut[ci]?'false':'true')+'" aria-label="Show or hide '+esc(c[0])+'">'+(shut[ci]?'▸':'▾')+'</button></h2>';
+    if(shut[ci]){h+='</section>';return}
+    h+='<div class="cbar"><button type="button" data-cb="all" data-cat="'+ci+'">✓ Check all</button><button type="button" data-cb="none" data-cat="'+ci+'">○ Uncheck all</button><button type="button" data-cb="narest" data-cat="'+ci+'">– Mark rest N/A</button></div>';
     l.forEach(function(i){h+='<div class="item'+(i.d?' done':'')+(i.na?' na':'')+'"><label><input type="checkbox" data-k="'+i.id+'"'+(i.d?' checked':'')+'><span>'+esc(i.t)+'</span></label><button class="nab" data-n="'+i.id+'" aria-pressed="'+(i.na?'true':'false')+'" title="Not needed this trip" aria-label="Not needed: '+esc(i.t)+'">N/A</button><button class="del" data-x="'+i.id+'" aria-label="Delete '+esc(i.t)+'">🗑️</button></div>'});
-    h+='</section>';
+    h+='<form class="cadd" data-cat="'+ci+'"><input placeholder="Add an item…" maxlength="80" autocomplete="off" aria-label="Add an item to '+esc(c[0])+'"><button type="submit">＋ Add</button></form></section>';
   });
   document.getElementById("list").innerHTML=h;
   // celebrations: a different show for each category that just got finished, a big one for everything
@@ -197,7 +203,16 @@ function render(){
   if(lastFin){if(all&&!lastAll)party(-1);else{var nw=fin.map(function(f,ci){return f&&!lastFin[ci]?ci:-1}).filter(function(x){return x>=0});if(nw.length)party(nw[nw.length-1])}}
   lastFin=fin;lastAll=all;
 }
-var lastFin=null,lastAll=false;
+var lastFin=null,lastAll=false,shut={};
+try{shut=JSON.parse(localStorage.getItem(KEY+"-closed"))||{}}catch(e){shut={}}
+// add an item straight into a category
+document.getElementById("list").addEventListener("submit",function(e){
+  var f=e.target.closest(".cadd");if(!f)return;e.preventDefault();
+  var ci=+f.getAttribute("data-cat"),v=f.querySelector("input").value.trim();if(!v)return;
+  items.push({id:Date.now()+Math.random(),t:v,c:ci,d:false});save();render();
+  var nf=document.querySelector('.cadd[data-cat="'+ci+'"] input');if(nf)nf.focus();
+  var b=nf?nf.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};burst(b.left+b.width/2,b.top);
+});
 document.getElementById("f").onsubmit=function(e){
   e.preventDefault();var t=document.getElementById("t"),v=t.value.trim();if(!v)return;
   items.push({id:Date.now()+Math.random(),t:v,c:+sel.value,d:false});t.value="";save();render();t.focus();
@@ -205,6 +220,7 @@ document.getElementById("f").onsubmit=function(e){
 };
 document.getElementById("list").onclick=function(e){
   if(e.target.id==="starter"){items=starter();save();render();return}
+  var fo=e.target.closest("[data-col]");if(fo){var q=+fo.getAttribute("data-col");shut[q]=!shut[q];try{localStorage.setItem(KEY+"-closed",JSON.stringify(shut))}catch(er){}render();return}
   var cb=e.target.closest("[data-cb]");if(cb){bulk(cb.getAttribute("data-cb"),+cb.getAttribute("data-cat"));return}
   var x=e.target.getAttribute("data-x"),k=e.target.getAttribute("data-k"),m=e.target.getAttribute("data-n");
   if(x){items=items.filter(function(i){return String(i.id)!==x});save();render()}
