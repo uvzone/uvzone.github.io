@@ -8,8 +8,9 @@ UV's own website. Plain HTML + CSS + a little JavaScript, no build step.
 | `jokes.html` + `jokes.js` | Joke Machine — add jokes to the list in `jokes.js` |
 | `about.html` | About Me — fill in favourites |
 | `arcade.html` | Mega Arcade — 46 mini games |
-| `yash.html` + `yash-data/questions.xlsx` | Prabhas — Aptitude Mock Tests (with error log); edit questions in the Excel file, results go to a Google Sheet (setup: `yash-data/RESULTS-SETUP.md`) |
+| `yash.html` + `yash-data/questions.xlsx` | Prabhas (hidden from the menu and Home for now) — Aptitude Mock Tests (with error log); edit questions in the Excel file, results go to a Google Sheet (setup: `yash-data/RESULTS-SETUP.md`) |
 | `diwali.html` | Diwali Trip — Messi's packing list; starter items are in `STARTER` in the page, ticks are saved on each device |
+| `favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | Smiley browser-tab and home-screen icon |
 | `style.css` | Colours and fonts for every page |
 
 ## Put it on GitHub Pages

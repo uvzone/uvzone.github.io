@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Messi’s Hyderabad Diwali Trip</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap">
 <style>
@@ -60,10 +63,23 @@ footer{text-align:center;margin-top:22px;color:var(--gold);font-weight:800;lette
 .say.on{animation:pop 2.6s ease-out}
 @keyframes pop{0%{transform:translateX(-50%) scale(0)}10%,80%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(0)}}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+#party{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:55}
+.bulk{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+.bulk[hidden]{display:none}
+.bulk span{font-weight:800;font-size:13px;color:var(--mute);margin-right:2px}
+.bulk button{min-height:38px;padding:0 12px;border:2px solid var(--line);border-radius:99px;background:var(--card);font-weight:800;font-size:13px}
+.bulk button:active{background:var(--line)}
+.cat .acts{flex:none;-webkit-appearance:none;appearance:none;width:44px;min-height:0;height:32px;padding:0;border:0;border-radius:99px;background:#fff;color:#0b2540;font:900 16px system-ui,sans-serif;text-align:center;text-align-last:center;cursor:pointer}
+.nab{flex:none;min-width:46px;height:34px;padding:0 8px;border:2px solid var(--line);border-radius:99px;background:none;font-weight:800;font-size:12px;color:var(--mute)}
+.item.na .nab{background:var(--mute);border-color:var(--mute);color:var(--card)}
+.item.na label span{color:var(--mute);font-style:italic}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 24px);padding:6px 6px 6px 16px;border-radius:99px;background:#0b2540;color:#fff;font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.toast[hidden]{display:none}
+.toast button{min-height:38px;padding:0 16px;border:0;border-radius:99px;background:var(--gold2);color:#0b2540;font-weight:900}
 </style>
 </head>
 <body>
-<canvas id="fx" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas><canvas id="party" aria-hidden="true"></canvas>
 <div class="chk l" style="top:22%"></div><div class="chk r" style="top:40%"></div><div class="chk l" style="top:62%"></div><div class="chk r" style="top:80%"></div>
 <div class="wrap">
   <a href="index.html" style="display:inline-flex;align-items:center;min-height:40px;margin:0 0 10px;padding:0 14px;border-radius:99px;background:var(--card);border:2px solid var(--line);color:var(--ink);font-weight:800;font-size:14px;text-decoration:none">← UV Zone</a>
@@ -90,11 +106,13 @@ footer{text-align:center;margin-top:22px;color:var(--gold);font-weight:800;lette
     <select id="c" aria-label="Category"></select>
     <button class="add" type="submit">＋ Add</button>
   </form>
+  <div class="bulk" id="bulk" hidden><span>All items:</span><button type="button" data-b="all">✅ Check all</button><button type="button" data-b="none">⬜ Uncheck all</button><button type="button" data-b="narest">🚫 N/A rest</button><button type="button" data-b="naall">🚫 N/A all</button><button type="button" data-b="unna">↩️ Clear N/A</button></div>
 
   <main id="list"></main>
   <a href="https://www.youtube.com/shorts/GgvE_k1xyEM" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;margin-top:18px;border-radius:14px;background:var(--gold2);color:#0b2540;font-weight:900;text-decoration:none;box-shadow:0 3px 0 var(--gold)">▶️ Watch the Ankara Messi short</a>
   <footer>🎆 GOLD STANDARD PACKING · VAMOS! 🎆</footer>
 </div>
+<div class="toast" id="toast" role="status" hidden><span id="tmsg"></span><button type="button" id="undo">Undo</button></div>
 <script>
 var CATS=[["Clothes & Diwali outfits","👕"],["Gifts","🎁"],["Documents & tickets","🎫"],["Electronics & chargers","🔌"],["Toiletries","🧴"],["Medicines","💊"],["Snacks","🍪"],["Crackers","🎇"]];
 var KEY="messi-diwali-pack-v1",items=[];
@@ -154,22 +172,29 @@ function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&
 var sel=document.getElementById("c");
 CATS.forEach(function(c,i){var o=document.createElement("option");o.value=i;o.textContent=c[1]+" "+c[0];sel.appendChild(o)});
 function render(){
-  var done=items.filter(function(i){return i.d}).length,n=items.length,p=n?Math.round(done/n*100):0;
+  var act=items.filter(function(i){return !i.na}),done=act.filter(function(i){return i.d}).length,n=act.length,na=items.length-n,p=n?Math.round(done/n*100):0,nt=na?" "+na+" N/A.":"";
   document.getElementById("pct").textContent=p+"%";
   document.getElementById("fill").style.width=p+"%";
   document.getElementById("ball").style.left=Math.max(3,Math.min(97,p))+"%";
-  document.getElementById("msg").textContent=!n?"Start adding items to your squad list.":p==100?"🏆 GOAL! Everything is packed. Vamos!":done+" of "+n+" packed. "+(n-done)+" to go.";
+  document.getElementById("msg").textContent=!items.length?"Start adding items to your squad list.":!n?"Everything is marked N/A.":p==100?"🏆 GOAL! Everything is packed. Vamos!"+nt:done+" of "+n+" packed. "+(n-done)+" to go."+nt;
+  document.getElementById("bulk").hidden=!items.length;
   var h="";
-  if(!n){h='<div class="empty">Your bag is empty. Type your first item above.<br><button type="button" id="starter">⚽ Add the starter list</button></div>'}
+  if(!items.length){h='<div class="empty">Your bag is empty. Type your first item above.<br><button type="button" id="starter">⚽ Add the starter list</button></div>'}
   CATS.forEach(function(c,ci){
     var l=items.filter(function(i){return i.c==ci});if(!l.length)return;
-    var d=l.filter(function(i){return i.d}).length;
-    h+='<section class="cat"><h2><span>'+c[1]+'</span>'+c[0]+'<small>'+d+'/'+l.length+'</small></h2>';
-    l.forEach(function(i){h+='<div class="item'+(i.d?' done':'')+'"><label><input type="checkbox" data-k="'+i.id+'"'+(i.d?' checked':'')+'><span>'+esc(i.t)+'</span></label><button class="del" data-x="'+i.id+'" aria-label="Delete '+esc(i.t)+'">🗑️</button></div>'});
+    var a=l.filter(function(i){return !i.na}),d=a.filter(function(i){return i.d}).length,x=l.length-a.length;
+    h+='<section class="cat"><h2><span>'+c[1]+'</span>'+c[0]+'<small>'+(a.length?d+'/'+a.length:'')+(x?(a.length?' · ':'')+x+' N/A':'')+'</small>'+
+      '<select class="acts" data-cat="'+ci+'" aria-label="Quick actions for '+esc(c[0])+'"><option value="">⋯</option><option value="all">✅ Check all</option><option value="none">⬜ Uncheck all</option><option value="narest">🚫 N/A the rest</option><option value="naall">🚫 N/A all</option><option value="unna">↩️ Clear N/A</option></select></h2>';
+    l.forEach(function(i){h+='<div class="item'+(i.d?' done':'')+(i.na?' na':'')+'"><label><input type="checkbox" data-k="'+i.id+'"'+(i.d?' checked':'')+'><span>'+esc(i.t)+'</span></label><button class="nab" data-n="'+i.id+'" aria-pressed="'+(i.na?'true':'false')+'" title="Not needed this trip" aria-label="Not needed: '+esc(i.t)+'">N/A</button><button class="del" data-x="'+i.id+'" aria-label="Delete '+esc(i.t)+'">🗑️</button></div>'});
     h+='</section>';
   });
   document.getElementById("list").innerHTML=h;
+  // celebrations: a different show for each category that just got finished, a big one for everything
+  var fin=CATS.map(function(c,ci){var a=items.filter(function(i){return i.c==ci&&!i.na});return a.length>0&&a.every(function(i){return i.d})}),all=n>0&&p==100;
+  if(lastFin){if(all&&!lastAll)party(-1);else{var nw=fin.map(function(f,ci){return f&&!lastFin[ci]?ci:-1}).filter(function(x){return x>=0});if(nw.length)party(nw[nw.length-1])}}
+  lastFin=fin;lastAll=all;
 }
+var lastFin=null,lastAll=false;
 document.getElementById("f").onsubmit=function(e){
   e.preventDefault();var t=document.getElementById("t"),v=t.value.trim();if(!v)return;
   items.push({id:Date.now()+Math.random(),t:v,c:+sel.value,d:false});t.value="";save();render();t.focus();
@@ -177,9 +202,43 @@ document.getElementById("f").onsubmit=function(e){
 };
 document.getElementById("list").onclick=function(e){
   if(e.target.id==="starter"){items=starter();save();render();return}
-  var x=e.target.getAttribute("data-x"),k=e.target.getAttribute("data-k");
+  var x=e.target.getAttribute("data-x"),k=e.target.getAttribute("data-k"),m=e.target.getAttribute("data-n");
   if(x){items=items.filter(function(i){return String(i.id)!==x});save();render()}
-  else if(k){items.forEach(function(i){if(String(i.id)===k)i.d=e.target.checked});save();render()}
+  else if(m){items.forEach(function(i){if(String(i.id)===m){i.na=!i.na;if(i.na)i.d=false}});save();render()}
+  else if(k){items.forEach(function(i){if(String(i.id)===k){i.d=e.target.checked;if(i.d)i.na=false}});save();render()}
+};
+// Quick actions: for every item (ci = null) or one category. N/A = not needed this trip, left out of the progress bar.
+document.getElementById("list").onchange=function(e){
+  var ci=e.target.getAttribute("data-cat");if(ci===null)return;
+  var a=e.target.value;e.target.value="";if(a)bulk(a,+ci);
+};
+document.getElementById("bulk").onclick=function(e){var b=e.target.closest("button");if(b)bulk(b.getAttribute("data-b"),null)};
+function bulk(a,ci){
+  var before=JSON.stringify(items),n=0;
+  items.forEach(function(i){
+    if(ci!==null&&i.c!=ci)return;
+    if(a=="all"&&!i.na&&!i.d){i.d=true;n++}
+    else if(a=="none"&&i.d){i.d=false;n++}
+    else if(a=="narest"&&!i.na&&!i.d){i.na=true;n++}
+    else if(a=="naall"&&!i.na){i.na=true;i.d=false;n++}
+    else if(a=="unna"&&i.na){i.na=false;n++}
+  });
+  if(!n){toast("Nothing to change");return}
+  save();render();
+  var s=n+" item"+(n>1?"s":"");
+  toast({all:"✅ Packed "+s,none:"⬜ Unchecked "+s,narest:"🚫 "+s+" marked N/A",naall:"🚫 "+s+" marked N/A",unna:"↩️ "+s+" back on the list"}[a]+(ci!==null?" in "+CATS[ci][0]:""),before);
+}
+var undoList=null,tTimer=0;
+function toast(m,back){
+  document.getElementById("tmsg").textContent=m;
+  undoList=back||null;
+  document.getElementById("undo").hidden=!back;
+  var t=document.getElementById("toast");t.hidden=false;
+  clearTimeout(tTimer);tTimer=setTimeout(function(){t.hidden=true;undoList=null},6000);
+}
+document.getElementById("undo").onclick=function(){
+  if(undoList){items=JSON.parse(undoList);undoList=null;save();render()}
+  document.getElementById("toast").hidden=true;
 };
 var cv=document.getElementById("fx"),cx=cv.getContext("2d"),P=[],run=false,RM=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches,COL=["#f5c542","#ffd978","#d99a00","#fff","#74ACDF","#ff9d2e"];
 function fit(){cv.width=innerWidth;cv.height=innerHeight}
@@ -199,6 +258,55 @@ function ankara(){var s=document.getElementById("say");s.classList.remove("on");
 function launch(n){chakras();ankara();for(var i=0;i<n;i++)rocket(innerWidth*(.15+Math.random()*.7),innerHeight*(.12+Math.random()*.3),150+i*380)}
 setTimeout(function(){ac();launch(4);setTimeout(function(){if(!ok())pend=true},300)},400);
 addEventListener("pointerdown",function(){ac();if(pend&&!added){pend=false;setTimeout(function(){launch(3)},150)}},{once:true});
+
+/* ---------- PARTY: one show per category ---------- */
+var pc=document.getElementById("party"),px=pc.getContext("2d"),Q=[],LZ=0,BAN=null,prun=false;
+function pfit(){pc.width=innerWidth;pc.height=innerHeight}pfit();addEventListener("resize",pfit);
+function rnd(a,b){return a+Math.random()*(b-a)}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function add(o){o.r=o.r||0;o.vr=o.vr||0;o.l=o.l||1;o.dl=o.dl||.006;Q.push(o)}
+function jingle(notes){if(!ok())return;var t=AC.currentTime;notes.forEach(function(f,i){var o=AC.createOscillator(),g=AC.createGain();o.type="triangle";o.frequency.value=f;g.gain.setValueAtTime(.0001,t+i*.11);g.gain.linearRampToValueAtTime(.08,t+i*.11+.02);g.gain.exponentialRampToValueAtTime(.0001,t+i*.11+.35);o.connect(g);g.connect(AC.destination);o.start(t+i*.11);o.stop(t+i*.11+.4)})}
+function zap(){if(!ok())return;var t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type="square";o.frequency.setValueAtTime(1800,t);o.frequency.exponentialRampToValueAtTime(120,t+.25);g.gain.setValueAtTime(.04,t);g.gain.exponentialRampToValueAtTime(.0001,t+.25);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+.3)}
+var W=function(){return innerWidth},H=function(){return innerHeight};
+var SHOWS=[
+ // 0 clothes: smiley confetti from both corners
+ function(){for(var i=0;i<70;i++){var L=i%2;add({k:"e",ch:pick(["😀","😄","😁","🤩","😎","🥳","😊"]),x:L?-10:W()+10,y:H()*.85,vx:(L?1:-1)*rnd(3,9),vy:-rnd(9,17),g:.32,s:rnd(22,36),vr:rnd(-.2,.2),dl:.007})}for(var j=0;j<60;j++)add({k:"c",x:W()/2,y:H()*.6,vx:rnd(-8,8),vy:-rnd(6,14),g:.25,s:rnd(6,10),col:pick(["#f5c542","#74ACDF","#ff6b8b","#7be495","#fff"]),vr:rnd(-.3,.3)})},
+ // 1 gifts: balloons float up + paper confetti
+ function(){for(var i=0;i<26;i++)add({k:"e",ch:pick(["🎈","🎈","🎈","🎁"]),x:rnd(0,W()),y:H()+rnd(20,400),vx:0,vy:-rnd(2.2,4),g:0,s:rnd(34,54),sw:rnd(0,6),dl:.004});for(var j=0;j<80;j++)add({k:"c",x:rnd(0,W()),y:-rnd(0,200),vx:rnd(-1,1),vy:rnd(2,4),g:.02,s:rnd(6,10),col:pick(["#f5c542","#74ACDF","#ff6b8b","#c38cff","#fff"]),vr:rnd(-.3,.3),dl:.005})},
+ // 2 documents: laser show
+ function(){LZ=200;zap();setTimeout(zap,400);setTimeout(zap,800)},
+ // 3 electronics: neon sparkle burst from the middle
+ function(){for(var i=0;i<60;i++){var a=rnd(0,6.283),s=rnd(3,11);add({k:"e",ch:pick(["⚡","✨","⭐","💫","🔋"]),x:W()/2,y:H()*.45,vx:Math.cos(a)*s,vy:Math.sin(a)*s,g:.08,s:rnd(20,34),vr:rnd(-.3,.3),dl:.009})}},
+ // 4 toiletries: soap bubbles rising
+ function(){for(var i=0;i<45;i++)add({k:"b",x:rnd(0,W()),y:H()+rnd(0,300),vx:0,vy:-rnd(1.5,3.5),g:0,s:rnd(10,34),sw:rnd(0,6),dl:.004})},
+ // 5 medicines: hearts floating up
+ function(){for(var i=0;i<40;i++)add({k:"e",ch:pick(["💖","❤️","💛","💙","💚","🩹"]),x:rnd(0,W()),y:H()+rnd(0,300),vx:0,vy:-rnd(2,4.5),g:0,s:rnd(22,40),sw:rnd(0,6),dl:.005})},
+ // 6 snacks: snack rain
+ function(){for(var i=0;i<55;i++)add({k:"e",ch:pick(["🍪","🍩","🍭","🍬","🍫","🟡","🥐"]),x:rnd(0,W()),y:-rnd(20,500),vx:rnd(-.6,.6),vy:rnd(2,5),g:.08,s:rnd(24,40),vr:rnd(-.15,.15),dl:.004})},
+ // 7 crackers: rocket fireworks
+ function(){for(var i=0;i<6;i++)rocket(innerWidth*(.12+Math.random()*.76),innerHeight*(.12+Math.random()*.35),i*300);chakras()}
+];
+var TUNES=[[523,659,784,1047],[392,494,587,784],[440,554,659,880],[523,784,659,1047],[349,440,523,698],[392,523,659,784],[330,415,494,659],[523,659,784,988]];
+function party(ci){
+  if(RM)return;ac();
+  if(ci<0){launch(6);SHOWS[0]();SHOWS[1]();for(var i=0;i<30;i++)add({k:"e",ch:pick(["⚽","🏆","⭐"]),x:rnd(0,W()),y:-rnd(20,500),vx:rnd(-.5,.5),vy:rnd(2,5),g:.08,s:rnd(28,44),vr:rnd(-.15,.15),dl:.004});LZ=160;BAN={t:"🏆 GOAL! ALL PACKED! 🏆",l:1};jingle([523,659,784,1047,784,1047]);}
+  else{SHOWS[ci]();BAN={t:CATS[ci][1]+" "+CATS[ci][0].toUpperCase()+" DONE!",l:1};jingle(TUNES[ci])}
+  if(!prun){prun=true;requestAnimationFrame(ptick)}
+}
+function ptick(){
+  var w=pc.width,h=pc.height;px.clearRect(0,0,w,h);
+  if(LZ>0){LZ--;var t=performance.now()/400,cols=["#ff2bd6","#2bf0ff","#7dff2b","#ffe02b"];px.save();px.globalCompositeOperation="lighter";px.lineCap="round";
+    for(var i=0;i<8;i++){var sx=i%2?w*.05:w*.95,sy=h,ang=Math.sin(t*1.3+i)*.8-Math.PI/2+(i%2?.35:-.35),len=h*1.3;px.strokeStyle=cols[i%4];px.globalAlpha=Math.min(1,LZ/40)*.75;px.shadowColor=cols[i%4];px.shadowBlur=18;px.lineWidth=4;px.beginPath();px.moveTo(sx,sy);px.lineTo(sx+Math.cos(ang)*len,sy+Math.sin(ang)*len);px.stroke()}
+    px.restore()}
+  Q=Q.filter(function(q){return q.l>0&&q.y<h+600&&q.y>-700});
+  Q.forEach(function(q){q.vy+=q.g;q.x+=q.vx+(q.sw?Math.sin(q.y/40+q.sw)*.8:0);q.y+=q.vy;q.r+=q.vr;q.l-=q.dl;px.save();px.globalAlpha=Math.min(1,q.l*2);px.translate(q.x,q.y);px.rotate(q.r);
+    if(q.k=="e"){px.font=q.s+"px serif";px.textAlign="center";px.textBaseline="middle";px.fillText(q.ch,0,0)}
+    else if(q.k=="c"){px.fillStyle=q.col;px.fillRect(-q.s/2,-q.s/4,q.s,q.s/2)}
+    else{px.strokeStyle="rgba(116,172,223,.9)";px.lineWidth=2;px.fillStyle="rgba(200,230,255,.25)";px.beginPath();px.arc(0,0,q.s,0,6.283);px.fill();px.stroke();px.fillStyle="rgba(255,255,255,.85)";px.beginPath();px.arc(-q.s*.35,-q.s*.35,q.s*.22,0,6.283);px.fill()}
+    px.restore()});
+  if(BAN){BAN.l-=.008;var a=Math.max(0,Math.min(1,BAN.l*3)),sc=1+Math.max(0,BAN.l-.85)*2;px.save();px.globalAlpha=a;px.translate(w/2,h*.32);px.font='34px "Bebas Neue",Impact,sans-serif';var fit=Math.min(1,w*.92/px.measureText(BAN.t).width);px.scale(sc*fit,sc*fit);px.textAlign="center";px.textBaseline="middle";px.lineWidth=6;px.strokeStyle="#0b2540";px.strokeText(BAN.t,0,0);px.fillStyle="#f5c542";px.fillText(BAN.t,0,0);px.restore();if(BAN.l<=0)BAN=null}
+  if(Q.length||LZ>0||BAN)requestAnimationFrame(ptick);else{prun=false;px.clearRect(0,0,w,h)}
+}
 load();render();
 (async function(){
   try{
