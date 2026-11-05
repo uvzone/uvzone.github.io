@@ -237,7 +237,7 @@ function bulk(a,ci){
   var before=JSON.stringify(items),n=0;
   items.forEach(function(i){
     if(ci!==null&&i.c!=ci)return;
-    if(a=="all"&&!i.na&&!i.d){i.d=true;n++}
+    if(a=="all"&&(i.na||!i.d)){i.d=true;i.na=false;n++}
     else if(a=="none"&&i.d){i.d=false;n++}
     else if(a=="narest"&&!i.na&&!i.d){i.na=true;n++}
     else if(a=="naall"&&!i.na){i.na=true;i.d=false;n++}
