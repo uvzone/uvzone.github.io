@@ -75,6 +75,9 @@ footer{text-align:center;margin-top:22px;color:var(--gold);font-weight:800;lette
 .item.na label span{color:var(--mute);font-style:italic}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 24px);padding:6px 6px 6px 16px;border-radius:99px;background:#0b2540;color:#fff;font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .toast[hidden]{display:none}
+.cbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--bg)}
+.cbar button{min-height:34px;padding:0 10px;border:2px solid var(--line);border-radius:99px;background:var(--card);font-weight:800;font-size:12px}
+.cbar button:active{background:var(--line)}
 .toast button{min-height:38px;padding:0 16px;border:0;border-radius:99px;background:var(--gold2);color:#0b2540;font-weight:900}
 </style>
 </head>
@@ -184,7 +187,7 @@ function render(){
     var l=items.filter(function(i){return i.c==ci});if(!l.length)return;
     var a=l.filter(function(i){return !i.na}),d=a.filter(function(i){return i.d}).length,x=l.length-a.length;
     h+='<section class="cat"><h2><span>'+c[1]+'</span>'+c[0]+'<small>'+(a.length?d+'/'+a.length:'')+(x?(a.length?' · ':'')+x+' N/A':'')+'</small>'+
-      '<select class="acts" data-cat="'+ci+'" aria-label="Quick actions for '+esc(c[0])+'"><option value="">⋯</option><option value="all">✅ Check all</option><option value="none">⬜ Uncheck all</option><option value="narest">🚫 N/A the rest</option><option value="naall">🚫 N/A all</option><option value="unna">↩️ Clear N/A</option></select></h2>';
+      '</h2><div class="cbar"><button type="button" data-cb="all" data-cat="'+ci+'">✅ Check all</button><button type="button" data-cb="none" data-cat="'+ci+'">⬜ Uncheck all</button><button type="button" data-cb="narest" data-cat="'+ci+'">🚫 N/A rest</button><button type="button" data-cb="naall" data-cat="'+ci+'">🚫 N/A all</button><button type="button" data-cb="unna" data-cat="'+ci+'">↩️ Clear N/A</button></div>';
     l.forEach(function(i){h+='<div class="item'+(i.d?' done':'')+(i.na?' na':'')+'"><label><input type="checkbox" data-k="'+i.id+'"'+(i.d?' checked':'')+'><span>'+esc(i.t)+'</span></label><button class="nab" data-n="'+i.id+'" aria-pressed="'+(i.na?'true':'false')+'" title="Not needed this trip" aria-label="Not needed: '+esc(i.t)+'">N/A</button><button class="del" data-x="'+i.id+'" aria-label="Delete '+esc(i.t)+'">🗑️</button></div>'});
     h+='</section>';
   });
@@ -202,6 +205,7 @@ document.getElementById("f").onsubmit=function(e){
 };
 document.getElementById("list").onclick=function(e){
   if(e.target.id==="starter"){items=starter();save();render();return}
+  var cb=e.target.closest("[data-cb]");if(cb){bulk(cb.getAttribute("data-cb"),+cb.getAttribute("data-cat"));return}
   var x=e.target.getAttribute("data-x"),k=e.target.getAttribute("data-k"),m=e.target.getAttribute("data-n");
   if(x){items=items.filter(function(i){return String(i.id)!==x});save();render()}
   else if(m){items.forEach(function(i){if(String(i.id)===m){i.na=!i.na;if(i.na)i.d=false}});save();render()}
